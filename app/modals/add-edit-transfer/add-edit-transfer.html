@@ -1,0 +1,35 @@
+<ion-content padding>
+    <form [ngFormModel]="form" (submit)="submit($event)">
+        <ion-item>
+            <ion-label>Amount</ion-label>
+            <ion-input type="text" ngControl="amount" placeholder="0.00" [attr.autofocus]="editing ? null : true"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>From</ion-label>
+            <ion-select ngControl="categoryFrom">
+                <ion-option *ngFor="let c of categories" value="{{c.id}}">{{c.name}}</ion-option>    
+            </ion-select>
+        </ion-item>
+        <ion-item>
+            <ion-label>To</ion-label>
+            <ion-select ngControl="categoryTo">
+                <ion-option *ngFor="let c of categories" value="{{c.id}}">{{c.name}}</ion-option>    
+            </ion-select>
+        </ion-item>
+        <ion-item>
+            <ion-label>Description</ion-label>
+            <ion-input type="text" ngControl="description"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>Date</ion-label>
+            <ion-input type="text" ngControl="date" placeholder="yyyymmdd"></ion-input>
+        </ion-item>
+        <div padding>
+            <button block type="submit" [disabled]="!form.valid">{{editing ? "Save" : "Create"}}</button>
+            <button block type="button" (click)="cancel()">Cancel</button>
+        </div>
+    </form>
+
+    <button *ngIf="editing" danger (click)="deleteTransactionConfirm()"><ion-icon name="trash"></ion-icon>Delete</button>
+
+</ion-content>

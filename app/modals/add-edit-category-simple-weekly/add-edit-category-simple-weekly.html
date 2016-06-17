@@ -1,0 +1,22 @@
+<ion-content padding>
+    <form [ngFormModel]="form" (submit)="submit($event)">
+        <ion-item>
+            <ion-label>Balance</ion-label>
+            <ion-input type="text" ngControl="balance"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>Weekly Amount</ion-label>
+            <ion-input type="text" ngControl="weeklyAmount"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>Balance Date</ion-label>
+            <ion-input type="text" placeholder="YYYYMMDD" ngControl="balanceDate"></ion-input>
+        </ion-item>
+        <div padding>
+            <button block type="submit" [disabled]="!form.valid">Save</button>
+            <button block type="button" (click)="cancel()">Cancel</button>
+        </div>
+    </form>
+
+
+</ion-content>

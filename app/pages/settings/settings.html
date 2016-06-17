@@ -1,0 +1,17 @@
+
+<ion-navbar *navbar>
+  <button menuToggle>
+    <ion-icon name="menu"></ion-icon>
+  </button>
+  <ion-title>Settings</ion-title>
+</ion-navbar>
+
+
+<ion-content>
+
+  <ion-item>
+    <ion-label>Simplified Currency Input</ion-label>
+    <ion-toggle [(ngModel)]="configuration.currencyNumericInput"></ion-toggle>
+  </ion-item>
+
+</ion-content>

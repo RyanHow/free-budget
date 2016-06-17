@@ -1,0 +1,9 @@
+node_modules/
+www/build/
+platforms/
+plugins/
+scripts/temp/
+.DS_Store
+resources/android/
+resources/ios/
+resources/wp8/

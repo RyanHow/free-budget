@@ -1,0 +1,12 @@
+<ion-menu swipeEnabled="false" #menu [content]="content">
+    <ion-toolbar>
+        <ion-title>Pages</ion-title>
+    </ion-toolbar>
+
+    <ion-content>
+      <main-menu-content [menu]="menu" [nav]="content"></main-menu-content>
+    </ion-content>
+</ion-menu>
+
+
+<ion-nav id="nav" [root]="rootPage" #content swipeBackEnabled="true"></ion-nav>

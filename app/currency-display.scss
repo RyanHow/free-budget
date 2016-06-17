@@ -1,0 +1,13 @@
+currency-display {
+  .positive-currency:before {
+    content: '+';
+    display: inline;
+  }
+  .positive-currency {
+    color: $currency-display-positive;
+  }
+  
+  .negative-currency {
+    color: $currency-display-negative;
+  }
+}

@@ -1,0 +1,15 @@
+<ion-content padding>
+    <form [ngFormModel]="form" (submit)="submit($event)">
+        <ion-item>
+            <ion-label>Category Name</ion-label>
+            <ion-input type="text" ngControl="categoryName" [attr.autofocus]="editing ? null : true" ></ion-input>
+        </ion-item>
+        <div padding>
+            <button block type="submit" [disabled]="!form.valid">{{editing ? "Save" : "Create Category"}}</button>
+            <button block type="button" (click)="cancel()">Cancel</button>
+        </div>
+    </form>
+
+    <button *ngIf="editing" danger (click)="deleteCategoryConfirm()"><ion-icon name="trash"></ion-icon>Delete Category</button>
+
+</ion-content>

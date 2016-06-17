@@ -1,0 +1,6 @@
+<ion-list>
+    <button ion-item detail-none menuClose (click)="goHome()">Home</button>
+    <button ion-item detail-none menuClose (click)="goDev()">Dev</button>
+    <button ion-item detail-none menuClose (click)="goSettings()">Settings</button>
+    <button ion-item detail-none menuClose *ngFor="let b of budgets" (click)="openBudget(b)">{{budgetName(b)}}</button>
+</ion-list>
