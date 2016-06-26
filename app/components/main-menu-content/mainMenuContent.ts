@@ -1,4 +1,4 @@
-import {IONIC_DIRECTIVES, Modal, Menu, NavController, Nav, App} from 'ionic-angular';
+import {IONIC_DIRECTIVES, Modal, Menu, NavController, Nav, App, Alert} from 'ionic-angular';
 import {Component, Input, ViewChild} from '@angular/core';
 import {Dbms} from '../../db/dbms.service';
 import {Db} from '../../db/db';
@@ -39,7 +39,7 @@ export class MainMenuContent {
     this.nav.setRoot(BudgetPage, {'budget' : budget});
   }
 
-  lastOpenedBudget() : any {
+  lastOpenedBudget() : Db {
     let budgetId = this.configuration.lastOpenedBudget();
     if (!budgetId) return;
     let budget = this.dbms.getDb(budgetId)
@@ -77,6 +77,36 @@ export class MainMenuContent {
 
     this.nav.present(modal);
 
+  }
+
+  deleteBudget() {
+    let confirm = Alert.create({
+      title: 'Delete?',
+      message: 'Are you sure you want to delete this budget (' + this.lastOpenedBudget().name() + ')?',
+      buttons: [
+        {
+          text: 'Cancel'
+        } , {
+          text: 'Delete',
+          role: 'destructive',
+          handler: () => {
+            confirm.dismiss().then(() => {
+              this.doDeleteBudget();
+            });
+            return false;
+          }
+        }
+      ]
+    });
+
+    this.nav.present(confirm);
+  }
+
+  doDeleteBudget() {
+    this.lastOpenedBudget().deactivate();
+    this.dbms.deleteDb(this.lastOpenedBudget().id);
+    this.configuration.lastOpenedBudget(null);
+    this.nav.setRoot(HomePage);
   }
 
 }

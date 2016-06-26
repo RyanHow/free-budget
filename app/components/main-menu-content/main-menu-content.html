@@ -3,7 +3,8 @@
         <ion-icon name="checkbox-outline" item-left></ion-icon>
         <b>{{budgetName(lastOpenedBudget())}}</b>
     </ion-item-divider>
-    <button ion-item detail-none class="button-assertive icon-left ion-trash-a" (click)="deleteBudget()">Delete Budget...</button>
+    <button ion-item detail-none menuClose (click)="renameBudget()">Rename Budget...</button>
+    <button ion-item detail-none menuClose (click)="deleteBudget()">Delete Budget...</button>
 </ion-item-group>
 <ion-item-group>
     <ion-item-divider light>

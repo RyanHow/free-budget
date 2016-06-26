@@ -57,4 +57,15 @@ export class Dbms {
 
         return db;
     }
+
+    deleteDb(id : string) {
+        let db = this.getDb(id);
+        this.dbs.splice(this.dbs.indexOf(db), 1);
+        this.dbMap.delete(id);
+        db.fireEvent("deleted", {});
+        this.persistenceProvider.transactions(id).forEach(transaction => {
+            this.persistenceProvider.deleteTransaction(id, transaction.id);
+        });
+        this.persistenceProvider.unlinkDb(id);
+    }
 }

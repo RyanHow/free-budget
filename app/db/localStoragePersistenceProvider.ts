@@ -26,6 +26,14 @@ export class LocalStoragePersistenceProvider {
         }
     }
     
+    unlinkDb(dbId : string) {
+        let dbArray = this.dbs();
+        if (dbArray.indexOf(dbId) > -1) {
+            dbArray.splice(dbArray.indexOf(dbId), 1);
+            localStorage.setItem(this.storagePrefix + "_dbs", JSON.stringify(dbArray));
+        }
+    }
+
     transactions(dbId) : Array<Transaction> {
         var transactions = [];
         for ( var i = 0, len = localStorage.length; i < len; ++i ) {
@@ -42,6 +50,11 @@ export class LocalStoragePersistenceProvider {
     saveTransaction(dbId : String, transaction : Transaction) {
         localStorage.setItem(this.storagePrefix + "_" + dbId + "_" + transaction.id, this.transactionSerializer.toJson(transaction));
     }
+
+    deleteTransaction(dbId : String, transactionId : number) {
+        localStorage.removeItem(this.storagePrefix + "_" + dbId + "_" + transactionId);
+    }
+
     
     keyStore(dbId : string, key : string, value : string) {
         var localKey = this.storagePrefix + "_keystore_" + dbId + "_" + key;
