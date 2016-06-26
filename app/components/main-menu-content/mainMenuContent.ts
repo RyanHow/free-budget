@@ -1,10 +1,12 @@
-import {IONIC_DIRECTIVES, Menu, NavController, Nav, App} from 'ionic-angular';
+import {IONIC_DIRECTIVES, Modal, Menu, NavController, Nav, App} from 'ionic-angular';
 import {Component, Input, ViewChild} from '@angular/core';
 import {Dbms} from '../../db/dbms.service';
 import {Db} from '../../db/db';
 import {Configuration} from '../../configuration.service';
 import {BudgetPage} from '../../pages/budget/budget';
 import {HomePage} from '../../pages/home/home';
+import {InitBudgetTransaction} from '../../data/transactions/initBudgetTransaction';
+import {AddBudgetModal} from '../../modals/add-budget/addBudget';
 import {DevPage} from '../../pages/dev/dev';
 import {SettingsPage} from '../../pages/settings/settings';
 
@@ -33,8 +35,15 @@ export class MainMenuContent {
   }
   
   openBudget(budget : Db) {
-    this.configuration.autoOpenBudget(budget.id);
+    this.configuration.lastOpenedBudget(budget.id);
     this.nav.setRoot(BudgetPage, {'budget' : budget});
+  }
+
+  lastOpenedBudget() : any {
+    let budgetId = this.configuration.lastOpenedBudget();
+    if (!budgetId) return;
+    let budget = this.dbms.getDb(budgetId)
+    return budget;
   }
   
   goHome() {
@@ -49,5 +58,25 @@ export class MainMenuContent {
     this.nav.setRoot(SettingsPage);
   }
 
+  addBudget() {
+    let modal = Modal.create(AddBudgetModal);
+
+    modal.onDismiss((data) => {
+      if (data && data.budgetName != "" ) {
+        let db = this.dbms.createDb();
+        db.activate();
+        let t = new InitBudgetTransaction();
+        t.budgetName = data.budgetName;
+        db.applyTransaction(t);
+        db.deactivate();
+
+        this.nav.setRoot(BudgetPage, {'budget' : db});
+
+      }
+    });
+
+    this.nav.present(modal);
+
+  }
 
 }

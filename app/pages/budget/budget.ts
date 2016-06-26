@@ -13,14 +13,12 @@ import {CurrencyDisplay} from '../../currencyDisplay';
   directives: [CurrencyDisplay]
 })
 export class BudgetPage {
-  projectMenuEnabled : boolean;
   budget : Db;
   budgetRecord : Budget;
   categories : Category[]
   
   constructor(private nav: NavController, private dbms : Dbms, private params : NavParams, private engineFactory : EngineFactory){
     this.nav = nav;
-    this.projectMenuEnabled = true;
     this.dbms = dbms;
     
     this.budget = this.params.data.budget;
@@ -43,9 +41,6 @@ export class BudgetPage {
     this.nav.push(CategoryPage, {"budget" : this.budget, "categoryId" : category.id});
   }
   
-  deleteBudget() {
-    
-  }
   
   ionViewDidUnload() {
     // TODO: CHeck this is called appropriately (ie. on a different setRoot(), but not on navigating to a child page)

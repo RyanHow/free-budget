@@ -1,3 +1,15 @@
+<ion-toolbar>
+  <ion-buttons start>
+    <button (click)="cancel()">Cancel</button>
+  </ion-buttons>
+
+  <ion-title>Category Settings</ion-title>
+
+  <ion-buttons end>
+    <button (click)="submit($event)" [disabled]="!form.valid">Save</button>
+  </ion-buttons>
+
+</ion-toolbar>
 <ion-content padding>
     <form [ngFormModel]="form" (submit)="submit($event)">
         <ion-item>
@@ -12,10 +24,6 @@
             <ion-label>Balance Date</ion-label>
             <ion-input type="text" placeholder="YYYYMMDD" ngControl="balanceDate"></ion-input>
         </ion-item>
-        <div padding>
-            <button block type="submit" [disabled]="!form.valid">Save</button>
-            <button block type="button" (click)="cancel()">Cancel</button>
-        </div>
     </form>
 
 

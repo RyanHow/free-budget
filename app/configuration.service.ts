@@ -49,7 +49,7 @@ export class Configuration {
         
     }
     
-    autoOpenBudget(budgetId? : string) {
+    lastOpenedBudget(budgetId? : string) {
         if (budgetId) {
             localStorage.setItem("autoOpenBudgetId", budgetId);
         }

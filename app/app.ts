@@ -54,9 +54,9 @@ export class BudgetApp {
       StatusBar.styleDefault();
       
       this.ready = true;
-        if (configuration.autoOpenBudget()) {
+        if (configuration.lastOpenedBudget()) {
           try {
-            let budget = dbms.getDb(configuration.autoOpenBudget());
+            let budget = dbms.getDb(configuration.lastOpenedBudget());
             this.nav.setRoot(BudgetPage, {'budget' : budget});
           } catch (e) {
             JL().error({msg: "Unable to auto open budget", exception: e});            

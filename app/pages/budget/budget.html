@@ -1,9 +1,14 @@
 
 <ion-navbar *navbar>
-  <button *ngIf="projectMenuEnabled" menuToggle>
+  <button menuToggle>
     <ion-icon name="menu"></ion-icon>
   </button>
   <ion-title>{{budget.name()}}</ion-title>
+  <ion-buttons end>
+    <button (click)="addCategory()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-buttons>
 </ion-navbar>
 
 
@@ -11,8 +16,5 @@
   <ion-list>
     <button ion-item detail-none *ngFor="let c of categories" (click)="openCategory(c)"><div>{{c.name}}</div><div item-right><currency-display highlightNegative [value]="c.balance"></currency-display></div></button>
   </ion-list>    
-<button class="button-positive icon-left ion-plus" (click)="addCategory()">Add Category</button>
-<button class="button-positive icon-left ion-share" (click)="shareBudget()">Share Budget</button>
-<button class="button-assertive icon-left ion-trash-a" (click)="deleteBudget()">Delete Budget (Move to menu)</button>
 
 </ion-content>

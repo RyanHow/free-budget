@@ -1,19 +1,23 @@
 
 <ion-navbar *navbar>
-  <ion-title>{{category.name}} - {{category.balance}}</ion-title>
+  <ion-title>{{category.name}}</ion-title>
+  <ion-buttons end>
+    <button (click)="editCategory()"><ion-icon name="create-outline" md="md-create"></ion-icon></button>
+    <button (click)="addTransfer()"><ion-icon name="shuffle"></ion-icon></button>
+    <button (click)="addTransaction()"><ion-icon name="add"></ion-icon></button>
+  </ion-buttons>
 </ion-navbar>
 
 
 <ion-content>
   <ion-list>
+    <button ion-item detail-none (click)="editSimpleWeekly()">
+        Balance
+        <currency-display [value]="category.balance" item-right></currency-display>
+    </button>
     <button ion-item detail-none (click)="editTransaction(t)" *ngFor="let t of transactions.data()">
       <div>{{t.date | dFormat}} {{t.description}}</div>
       <currency-display invertedCurrency highlightPositive [value]="t.amount" item-right></currency-display>
     </button>
   </ion-list>    
-<button (click)="addTransaction()"><ion-icon name="add"></ion-icon>Add Transaction</button>
-<button (click)="addTransfer()"><ion-icon name="swap"></ion-icon>Tranfer</button>
-<button (click)="editCategory()"><ion-icon name="cog"></ion-icon>Category Name</button>
-<button (click)="editSimpleWeekly()"><ion-icon name="cog"></ion-icon>Settings</button>
-
 </ion-content>

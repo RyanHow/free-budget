@@ -23,6 +23,10 @@ export class InitCategorySimpleWeeklyTransaction extends Transaction {
         
         let table = tp.table(Category);
         let categoryRecord = table.by("id", <any> this.categoryId);
+        if (categoryRecord == null) {
+            JL().warn("Trying to processing category weekly transaction with invalid category. Skipping.");
+            return;
+        }
         let processor = new CategorySimpleWeeklyProcessor();
         processor.balance = this.balance;
         processor.weeklyAmount = this.weeklyAmount;
@@ -45,6 +49,12 @@ export class InitCategorySimpleWeeklyTransaction extends Transaction {
     undo(tp :TransactionProcessor) {
         let table = tp.table(Category);
         let categoryRecord = table.by("id", <any> this.categoryId);
+
+        if (categoryRecord == null) {
+            JL().warn("Trying to processing category weekly transaction with invalid category. Skipping.");
+            return;
+        }
+
         // TODO: A better method of finding, or some centralised methods in engine rather than using the processors array directly...
         let categorySimpleWeeklyProcessor = categoryRecord.engine.processors.find(processor => {
             return processor.getTypeId() == "CategorySimpleWeeklyProcessor" && (<CategorySimpleWeeklyProcessor> processor).transactionId == this.id;
