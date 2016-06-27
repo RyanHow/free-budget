@@ -1,7 +1,8 @@
-import {Page, Modal, NavController, ViewController} from 'ionic-angular';
+import {Modal, NavController, ViewController} from 'ionic-angular';
 import {FormBuilder, Validators, ControlGroup} from '@angular/common';
+import {Component} from '@angular/core';
 
-@Page({
+@Component({
   templateUrl: "build/modals/add-budget/add-budget.html"
 })
 export class AddBudgetModal {

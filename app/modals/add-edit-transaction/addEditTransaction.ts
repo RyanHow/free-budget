@@ -9,8 +9,9 @@ import * as moment from 'moment';
 import {PriceFormat} from '../../priceFormat';
 import {Configuration} from '../../configuration.service';
 import {NoFocusDirective} from '../../noFocus';
+import {Component} from '@angular/core';
 
-@Page({
+@Component({
   templateUrl: "build/modals/add-edit-transaction/add-edit-transaction.html",
   directives: [PriceFormat, NoFocusDirective]
 })

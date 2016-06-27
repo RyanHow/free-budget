@@ -6,8 +6,9 @@ import {Transaction} from '../../data/records/transaction';
 import {Dbms} from '../../db/dbms.service';
 import {InitCategoryTransferTransaction} from '../../data/transactions/initCategoryTransferTransaction';
 import * as moment from 'moment';
+import {Component} from '@angular/core';
 
-@Page({
+@Component({
   templateUrl: "build/modals/add-edit-transfer/add-edit-transfer.html"
 })
 export class AddEditTransferModal {

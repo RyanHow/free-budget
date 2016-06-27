@@ -4,8 +4,9 @@ import {Db} from '../../db/db';
 import {Category} from '../../data/records/category';
 import {Dbms} from '../../db/dbms.service';
 import {InitCategorySimpleWeeklyTransaction} from '../../data/transactions/initCategorySimpleWeeklyTransaction';
+import {Component} from '@angular/core';
 
-@Page({
+@Component({
   templateUrl: "build/modals/add-edit-category-simple-weekly/add-edit-category-simple-weekly.html"
 })
 export class AddEditCategorySimpleWeeklyModal {
