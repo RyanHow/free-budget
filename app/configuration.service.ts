@@ -24,12 +24,22 @@ export class Configuration {
         localStorage.setItem("currencyNumericInput", value ? "true" : "false");
     }
 
+    get loglevel() : string {
+        return localStorage.getItem("loglevel");
+    }
+
+    set loglevel(value : string) {
+        localStorage.setItem("loglevel", value);
+    }
+
     
     constructor(private transactionSerializer : TransactionSerializer, private editorProvider : EditorProvider) {
         
     }
     
     configure() {
+        this.initLogLevel();
+
         this.transactionSerializer.registerType(InitCategoryTransaction);
         this.transactionSerializer.registerType(InitCategoryTransferTransaction);
         this.transactionSerializer.registerType(InitSimpleTransaction);
@@ -47,6 +57,14 @@ export class Configuration {
         // Unique to this device and installation
         this.deviceInstallationId = this.deviceId + "-" + this.installationId;
         
+    }
+
+    initLogLevel() {
+        if (this.loglevel == "Debug") {
+            JL().setOptions({level:JL.getDebugLevel()});
+        } else {
+            JL().setOptions({level:JL.getInfoLevel()});
+        }
     }
     
     lastOpenedBudget(budgetId? : string) {

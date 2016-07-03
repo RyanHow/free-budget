@@ -1,15 +1,17 @@
-<ion-toolbar>
-  <ion-buttons start>
-    <button (click)="cancel()">Cancel</button>
-  </ion-buttons>
+<ion-header>
+    <ion-toolbar>
+    <ion-buttons start>
+        <button (click)="cancel()">Cancel</button>
+    </ion-buttons>
 
-  <ion-title>Category Settings</ion-title>
+    <ion-title>Category Settings</ion-title>
 
-  <ion-buttons end>
-    <button (click)="submit($event)" [disabled]="!form.valid">Save</button>
-  </ion-buttons>
+    <ion-buttons end>
+        <button (click)="submit($event)" [disabled]="!form.valid">Save</button>
+    </ion-buttons>
 
-</ion-toolbar>
+    </ion-toolbar>
+</ion-header>
 <ion-content padding>
     <form [ngFormModel]="form" (submit)="submit($event)">
         <ion-item>

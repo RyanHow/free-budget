@@ -1,11 +1,11 @@
-
-<ion-navbar *navbar>
-  <button *ngIf="projectMenuEnabled" menuToggle>
-    <ion-icon name="menu"></ion-icon>
-  </button>
-  <ion-title ng-if=false>Getting Started</ion-title>
-</ion-navbar>
-
+<ion-header>
+  <ion-navbar>
+    <button *ngIf="projectMenuEnabled" menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title ng-if=false>Getting Started</ion-title>
+  </ion-navbar>
+</ion-header>
 
 <ion-content padding class="getting-started">
 

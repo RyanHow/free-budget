@@ -1,19 +1,19 @@
-
-<ion-navbar *navbar>
-  <ion-title>{{category.name}}</ion-title>
-  <ion-buttons end>
-    <button (click)="editCategory()"><ion-icon name="create-outline" md="md-create"></ion-icon></button>
-    <button (click)="addTransfer()"><ion-icon name="shuffle"></ion-icon></button>
-    <button (click)="addTransaction()"><ion-icon name="add"></ion-icon></button>
-  </ion-buttons>
-</ion-navbar>
-
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{category.name}}</ion-title>
+    <ion-buttons end>
+      <button (click)="addTransaction()"><ion-icon name="add"></ion-icon></button>
+      <button (click)="addTransfer()"><ion-icon name="shuffle"></ion-icon></button>
+      <button (click)="showMore($event)"><ion-icon name="more"></ion-icon></button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
 
 <ion-content>
   <ion-list>
     <button ion-item detail-none (click)="editSimpleWeekly()">
         Balance
-        <currency-display [value]="category.balance" item-right></currency-display>
+        <currency-display highlightNegative [value]="category.balance" item-right></currency-display>
     </button>
     <button ion-item detail-none (click)="editTransaction(t)" *ngFor="let t of transactions.data()">
       <div>{{t.date | dFormat}} {{t.description}}</div>

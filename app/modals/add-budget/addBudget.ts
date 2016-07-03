@@ -1,5 +1,5 @@
-import {Modal, NavController, ViewController} from 'ionic-angular';
-import {FormBuilder, Validators, ControlGroup} from '@angular/common';
+import {Modal, NavController, ViewController, NavParams} from 'ionic-angular';
+import {FormBuilder, Validators, ControlGroup, Control} from '@angular/common';
 import {Component} from '@angular/core';
 
 @Component({
@@ -7,12 +7,22 @@ import {Component} from '@angular/core';
 })
 export class AddBudgetModal {
   form: ControlGroup;
+  editing: boolean;
   
-  constructor(public viewCtrl: ViewController, private formBuilder: FormBuilder) {
+  constructor(public viewCtrl: ViewController, private formBuilder: FormBuilder, private navParams: NavParams) {
     this.viewCtrl = viewCtrl;
     this.form = formBuilder.group({
       budgetName: ["", Validators.required]
     });
+
+    if (navParams.data && navParams.data.budgetName) {
+      this.editing = true;
+      (<Control>this.form.controls["budgetName"]).updateValue(navParams.data.budgetName);
+    } else {
+      this.editing = false;
+    }
+
+
     
   }
   

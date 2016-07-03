@@ -79,6 +79,22 @@ export class MainMenuContent {
 
   }
 
+  renameBudget() {
+    let modal = Modal.create(AddBudgetModal);
+    modal.data.budgetName = this.lastOpenedBudget().name();
+
+    modal.onDismiss((data) => {
+      if (data && data.budgetName != "" && data.budgetName != this.lastOpenedBudget().name()) {
+        let t = InitBudgetTransaction.getFrom(this.lastOpenedBudget());
+        t.budgetName = data.budgetName;
+        this.lastOpenedBudget().applyTransaction(t);
+      }
+    });
+
+    this.nav.present(modal);
+
+  }
+
   deleteBudget() {
     let confirm = Alert.create({
       title: 'Delete?',

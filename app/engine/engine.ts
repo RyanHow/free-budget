@@ -6,6 +6,7 @@ export class Engine {
     constructor(public db : Db) {
         db.addEventListener(eventName => {
             if (eventName == "transaction-applied") this.runAll();
+            if (eventName == "transaction-undone") this.runAll();
         });
         
     }

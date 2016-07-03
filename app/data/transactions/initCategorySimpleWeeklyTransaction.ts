@@ -62,16 +62,16 @@ export class InitCategorySimpleWeeklyTransaction extends Transaction {
         
         categoryRecord.engine.processors.splice(categoryRecord.engine.processors.indexOf(categorySimpleWeeklyProcessor), 1);
         
-        table.update(categoryRecord);        
+        table.update(categoryRecord);
     }
 
     static getFrom(db : Db, category : Category) : InitCategorySimpleWeeklyTransaction {
-        let categorySimpleWeeklyProcessor = category.engine.processors.find(processor => {
+        let categorySimpleWeeklyProcessor = <CategorySimpleWeeklyProcessor>category.engine.processors.find(processor => {
             return processor.getTypeId() == "CategorySimpleWeeklyProcessor";
         });
 
         if (!categorySimpleWeeklyProcessor) return;
-        return db.getTransaction<InitCategorySimpleWeeklyTransaction>((<CategorySimpleWeeklyProcessor>categorySimpleWeeklyProcessor).transactionId);
+        return db.getTransaction<InitCategorySimpleWeeklyTransaction>((categorySimpleWeeklyProcessor).transactionId);
     }
     
     deserialize(field : string, value : any) : any {

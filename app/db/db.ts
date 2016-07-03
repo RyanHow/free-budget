@@ -181,6 +181,7 @@ export class Db {
         if (!transaction.applied) return;
         transaction.undo(this.transactionProcessor);
         transaction.applied = false;
+        this.fireEvent("transaction-undone", {'transaction' : transaction});
     }
     
     

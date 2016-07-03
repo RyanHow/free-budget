@@ -1,4 +1,5 @@
-import {Page, Modal, NavController, NavParams, Refresher} from 'ionic-angular';
+import {Page, Modal, NavController, NavParams, Refresher, Popover, ViewController} from 'ionic-angular';
+import {Component} from '@angular/core';
 import {Dbms} from '../../db/dbms.service';
 import {Db} from '../../db/db';
 import {Category} from '../../data/records/category';
@@ -37,6 +38,12 @@ export class CategoryPage {
     this.transactions = <any> {data : function() {return []}};
   }
   
+  showMore(event) {
+    let popover = Popover.create(CategoryPopover, {categoryPage : this});
+    this.nav.present(popover, {
+      ev: event
+    });
+  }
  
   editCategory() {
     let modal = Modal.create(AddEditCategoryModal);
@@ -93,4 +100,29 @@ export class CategoryPage {
   }
 
   
+}
+
+
+@Component({
+  template: `
+    <ion-list>
+      <button ion-item detail-none (click)="categoryPage.editSimpleWeekly();close()">Weekly Amount</button>
+      <button ion-item detail-none (click)="categoryPage.editCategory();close()">Edit Category Name</button>
+      <button ion-item detail-none (click)="categoryPage.addTransaction();close()">New Transaction</button>
+      <button ion-item detail-none (click)="categoryPage.addTransfer();close()">Transfer Funds</button>
+    </ion-list>
+  `
+})
+class CategoryPopover {
+
+  private categoryPage : CategoryPage;
+
+  constructor(private viewCtrl: ViewController) {
+    this.categoryPage = <CategoryPage>viewCtrl.data.categoryPage;
+  }
+
+  close() {
+    this.viewCtrl.dismiss();
+  }
+
 }
