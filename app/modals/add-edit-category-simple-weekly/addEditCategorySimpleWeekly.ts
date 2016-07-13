@@ -5,6 +5,7 @@ import {Category} from '../../data/records/category';
 import {Dbms} from '../../db/dbms.service';
 import {InitCategorySimpleWeeklyTransaction} from '../../data/transactions/initCategorySimpleWeeklyTransaction';
 import {Component} from '@angular/core';
+import * as moment from 'moment';
 
 @Component({
   templateUrl: "build/modals/add-edit-category-simple-weekly/add-edit-category-simple-weekly.html"
@@ -28,14 +29,14 @@ export class AddEditCategorySimpleWeeklyModal {
     this.category = this.budget.transactionProcessor.table(Category).by("id", navParams.data.categoryId);    
     this.transaction = InitCategorySimpleWeeklyTransaction.getFrom(this.budget, this.category);
 
+    (<Control>this.form.controls["balanceDate"]).updateValue(moment().format("YYYYMMDD"));
+
     if (!this.transaction) {
       this.transaction = new InitCategorySimpleWeeklyTransaction();
       this.transaction.categoryId = this.category.id;
-      (<Control>this.form.controls["balanceDate"]).updateValue("20160520");
     } else {
-      (<Control>this.form.controls["balanceDate"]).updateValue(this.transaction.balanceDate);
       (<Control>this.form.controls["weeklyAmount"]).updateValue(this.transaction.weeklyAmount);
-      (<Control>this.form.controls["balance"]).updateValue(this.transaction.balance);
+      (<Control>this.form.controls["balance"]).updateValue(this.category.balance);
     }
 
   }

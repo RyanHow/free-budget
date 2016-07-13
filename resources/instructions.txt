@@ -1,0 +1,4 @@
+Edit SVG in inkscape
+
+Select and export icon only as PNG - 1024x1024
+Export page as PNG - 2088x2088

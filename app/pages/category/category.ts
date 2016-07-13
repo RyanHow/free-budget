@@ -7,6 +7,7 @@ import {Transaction} from '../../data/records/transaction';
 import {Budget} from '../../data/records/budget';
 import {AddEditCategoryModal} from '../../modals/add-edit-category/addEditCategory';
 import {AddEditCategorySimpleWeeklyModal} from '../../modals/add-edit-category-simple-weekly/addEditCategorySimpleWeekly';
+import {InitCategorySimpleWeeklyTransaction} from '../../data/transactions/initCategorySimpleWeeklyTransaction';
 import {EditorProvider} from '../../editorProvider.service';
 import {AddEditTransactionModal} from '../../modals/add-edit-transaction/addEditTransaction';
 import {AddEditTransferModal} from '../../modals/add-edit-transfer/addEditTransfer';
@@ -61,6 +62,12 @@ export class CategoryPage {
 
     this.nav.present(modal);
 
+  }
+
+  categoryWeeklyAmount() : any {
+    //TODO Very inefficient way to get a value in angular
+    let t = InitCategorySimpleWeeklyTransaction.getFrom(this.budget, this.category);
+    if (t) return t.weeklyAmount;
   }
 
   addTransaction() {

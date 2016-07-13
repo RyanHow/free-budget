@@ -15,6 +15,10 @@
         Balance
         <currency-display highlightNegative [value]="category.balance" item-right></currency-display>
     </button>
+    <button ion-item detail-none (click)="editSimpleWeekly()">
+        Weekly Amount
+        <currency-display highlightNegative [value]="categoryWeeklyAmount()" item-right></currency-display>
+    </button>
     <button ion-item detail-none (click)="editTransaction(t)" *ngFor="let t of transactions.data()">
       <div>{{t.date | dFormat}} {{t.description}}</div>
       <currency-display invertedCurrency highlightPositive [value]="t.amount" item-right></currency-display>
