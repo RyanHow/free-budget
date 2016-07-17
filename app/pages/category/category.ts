@@ -114,7 +114,7 @@ export class CategoryPage {
   template: `
     <ion-list>
       <button ion-item detail-none (click)="categoryPage.editSimpleWeekly();close()">Weekly Amount</button>
-      <button ion-item detail-none (click)="categoryPage.editCategory();close()">Edit Category Name</button>
+      <button ion-item detail-none (click)="categoryPage.editCategory();close()">Edit / Delete Category</button>
       <button ion-item detail-none (click)="categoryPage.addTransaction();close()">New Transaction</button>
       <button ion-item detail-none (click)="categoryPage.addTransfer();close()">Transfer Funds</button>
     </ion-list>

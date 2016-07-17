@@ -14,7 +14,13 @@
 
 <ion-content>
   <ion-list>
-    <button ion-item detail-none *ngFor="let c of categories" (click)="openCategory(c)"><div>{{c.name}}</div><div item-right><currency-display highlightNegative [value]="c.balance"></currency-display></div></button>
+    <button ion-item detail-none *ngFor="let c of categories" (click)="openCategory(c)">
+      <div>{{c.name}}</div>
+      <div item-right>
+        <currency-display highlightNegative [value]="c.balance"></currency-display>
+        <p style="text-align:right"><ion-note><currency-display showPositive [value]="categoryWeeklyAmount(c)"></currency-display></ion-note></p>
+      </div>
+    </button>
   </ion-list>    
 
 </ion-content>

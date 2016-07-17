@@ -1,3 +1,11 @@
-.category {
+.category-page {
   
+  [ion-item] currency-display {
+      flex-basis: 3.5em;
+      text-align:right;
+  }
+
+  [item-left] {
+      min-width: 3.5em;
+  }
 }

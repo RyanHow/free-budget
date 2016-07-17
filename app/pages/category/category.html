@@ -9,7 +9,7 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content>
+<ion-content class="category-page">
   <ion-list>
     <button ion-item detail-none (click)="editSimpleWeekly()">
         Balance
@@ -19,8 +19,9 @@
         Weekly Amount
         <currency-display highlightNegative [value]="categoryWeeklyAmount()" item-right></currency-display>
     </button>
-    <button ion-item detail-none (click)="editTransaction(t)" *ngFor="let t of transactions.data()">
-      <div>{{t.date | dFormat}} {{t.description}}</div>
+    <button class="category-transaction-item" ion-item detail-none (click)="editTransaction(t)" *ngFor="let t of transactions.data()">
+      <span item-left>{{t.date | dFormat}}</span> {{t.description}}
+        <ion-note item-right><ion-icon small *ngIf="t.config.transactionType == 'InitCategoryTransferTransaction'" name="shuffle" ></ion-icon></ion-note>
       <currency-display invertedCurrency highlightPositive [value]="t.amount" item-right></currency-display>
     </button>
   </ion-list>    
