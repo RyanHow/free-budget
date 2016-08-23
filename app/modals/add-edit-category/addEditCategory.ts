@@ -1,4 +1,4 @@
-import {Page, Modal, NavController, ViewController, NavParams, Alert} from 'ionic-angular';
+import {Page, Modal, NavController, ViewController, NavParams, Alert, AlertController} from 'ionic-angular';
 import {FormBuilder, Validators, ControlGroup, Control} from '@angular/common';
 import {Db} from '../../db/db';
 import {Category} from '../../data/records/category';
@@ -15,7 +15,7 @@ export class AddEditCategoryModal {
   editing: boolean;
   category: Category;
   
-  constructor(public viewCtrl: ViewController, private formBuilder: FormBuilder, private navParams: NavParams, private dbms : Dbms, private nav : NavController) {
+  constructor(public viewCtrl: ViewController, private formBuilder: FormBuilder, private navParams: NavParams, private dbms : Dbms, private nav : NavController, private alertController : AlertController) {
     this.viewCtrl = viewCtrl;
     this.nav = nav;
     
@@ -55,7 +55,7 @@ export class AddEditCategoryModal {
   }
   
   deleteCategoryConfirm() {
-    let confirm = Alert.create({
+    let confirm = this.alertController.create({
       title: 'Delete?',
       message: 'Are you sure you want to delete this category and everything in it?',
       buttons: [
@@ -74,7 +74,7 @@ export class AddEditCategoryModal {
       ]
     });
 
-    this.nav.present(confirm);
+    confirm.present();
   }
   
   deleteCategory() {

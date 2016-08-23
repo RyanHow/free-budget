@@ -16,15 +16,15 @@
     <form [ngFormModel]="form" (submit)="submit($event)">
         <ion-item>
             <ion-label>Balance</ion-label>
-            <ion-input type="text" ngControl="balance"></ion-input>
+            <ion-input currency-field [(ngModel)]="balance"></ion-input>
         </ion-item>
         <ion-item>
             <ion-label>Weekly Amount</ion-label>
-            <ion-input type="text" ngControl="weeklyAmount"></ion-input>
+            <ion-input currency-field [(ngModel)]="weeklyAmount"></ion-input>
         </ion-item>
         <ion-item>
             <ion-label>Balance Date</ion-label>
-            <ion-input type="text" placeholder="YYYYMMDD" ngControl="balanceDate"></ion-input>
+                <ion-datetime displayFormat="MMM D, YYYY" pickerFormat="MMM D YYYY" ngControl="balanceDate"></ion-datetime>
         </ion-item>
     </form>
 

@@ -17,7 +17,7 @@
         <form [ngFormModel]="form" (submit)="submit($event)">
             <ion-item>
                 <ion-label>Amount</ion-label>
-                <ion-input type="text" ngControl="amount" placeholder="0.00" [attr.autofocus]="editing ? null : true"></ion-input>
+                <ion-input currency-field  [(ngModel)]="amount" [attr.autofocus]="editing ? null : true"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label>From</ion-label>
@@ -37,7 +37,7 @@
             </ion-item>
             <ion-item>
                 <ion-label>Date</ion-label>
-                <ion-input type="text" ngControl="date" placeholder="yyyymmdd"></ion-input>
+                <ion-datetime displayFormat="MMM D, YYYY" pickerFormat="MMM D YYYY" ngControl="date"></ion-datetime>
             </ion-item>
         </form>
     </div>

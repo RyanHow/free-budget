@@ -2,39 +2,46 @@ import {Injectable} from '@angular/core';
 import {Transaction} from './transaction';
 import {TransactionSerializer} from './transactionSerializer.service';
 import {Db} from './db';
+import {DbPersistenceProvider} from './dbPersistenceProvider';
 
 @Injectable()
-export class LocalStoragePersistenceProvider {
+export class LocalStoragePersistenceProvider implements DbPersistenceProvider {
     
-    private storagePrefix : string;
     
-    constructor(storagePrefix : string, private transactionSerializer : TransactionSerializer) {
-        this.storagePrefix = storagePrefix;
+    constructor(private storagePrefix : string, private transactionSerializer : TransactionSerializer) {
     }
-    
+
+    init() : Promise<any> {
+        return Promise.resolve();
+    }
+
     dbs() : Array<string> {
         var dbArray = localStorage.getItem(this.storagePrefix + "_dbs");
         if (!dbArray) return [];
         return JSON.parse(dbArray);
     }
     
-    addDb(dbId : string) {
+    addDb(dbId : string) : Promise<void> {
         let dbArray = this.dbs();
         if (dbArray.indexOf(dbId) == -1) {
             dbArray.push(dbId);
             localStorage.setItem(this.storagePrefix + "_dbs", JSON.stringify(dbArray));
         }
+        return Promise.resolve();
     }
     
     unlinkDb(dbId : string) {
         let dbArray = this.dbs();
         if (dbArray.indexOf(dbId) > -1) {
             dbArray.splice(dbArray.indexOf(dbId), 1);
+            this.transactionsSync(dbId).forEach(transaction => {
+                this.deleteTransaction(dbId, transaction.id);
+            });
             localStorage.setItem(this.storagePrefix + "_dbs", JSON.stringify(dbArray));
         }
     }
 
-    transactions(dbId) : Array<Transaction> {
+    transactionsSync(dbId) : Array<Transaction> {
         var transactions = [];
         for ( var i = 0, len = localStorage.length; i < len; ++i ) {
             if (localStorage.key( i ).match(this.storagePrefix + "_" + dbId + "_")) {
@@ -44,6 +51,11 @@ export class LocalStoragePersistenceProvider {
             }
         }
         return transactions;
+    }
+
+
+    transactions(dbId) : Promise<Array<Transaction>> {
+        return Promise.resolve(this.transactionsSync(dbId));
     }
     
     
@@ -56,7 +68,7 @@ export class LocalStoragePersistenceProvider {
     }
 
     
-    keyStore(dbId : string, key : string, value : string) {
+    keyStore(dbId : string, key : string, value : string) : string {
         var localKey = this.storagePrefix + "_keystore_" + dbId + "_" + key;
         if (typeof value !== 'undefined' )
             localStorage.setItem(localKey, value);

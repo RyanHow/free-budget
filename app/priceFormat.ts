@@ -15,7 +15,7 @@ export class PriceFormat {
     input;
     displayInput;
 
-    constructor(private model : NgModel, eleRef : ElementRef) {
+    constructor(private model : NgModel, private ctrl : NgControl, eleRef : ElementRef) {
         this.element = eleRef.nativeElement;
     }
     
@@ -27,9 +27,14 @@ export class PriceFormat {
             //this.element.insertBefore(this.displayInput, this.input);
         }
         
-        this.model.valueAccessor.writeValue(this.fix_it(this.model.value));
-        this.model.viewToModelUpdate(this.fix_it(this.model.value));
-        
+        if (this.model.valueAccessor) {
+            this.model.valueAccessor.writeValue(this.fix_it(this.model.value));
+            this.model.viewToModelUpdate(this.fix_it(this.model.value));
+        } else {
+            throw new Error("price-format requires NgModel to function correctly");
+            //(<Control>this.ctrl.control).updateValue(this.fix_it(this.model.value));
+        }
+
 
     }
     
@@ -57,7 +62,7 @@ export class PriceFormat {
     clearOnEmpty = false;
     centsSeparator = ".";
     thousandsSeparator = ",";
-    allowNegative = false;
+    allowNegative = true;
     insertPlusSign = false;
     prefix = "";
     suffix = "";

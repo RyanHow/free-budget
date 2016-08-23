@@ -23,12 +23,12 @@
                     </ion-segment>
                 </ion-item>
             </ion-item-group>
+            <span>
             <ion-item>
                 <ion-label>Amount</ion-label>
-                <ion-input *ngIf="configuration.currencyNumericInput" type="text" [(ngModel)]="field.amount" priceFormat pattern="[0-9]*"
-                    step="0.01" inputmode="numeric" novalidate [attr.autofocus]="editing ? null : true"></ion-input>
-                <ion-input *ngIf="!configuration.currencyNumericInput" type="number" [(ngModel)]="field.amount" step="0.01" [attr.autofocus]="editing ? null : true"></ion-input>
+                <ion-input currency-field [(ngModel)]="field.amount" [attr.autofocus]="editing ? null : true"></ion-input>
             </ion-item>            
+            </span>
             <ion-item>
                 <ion-label>Description</ion-label>
                 <ion-input type="text" ngControl="description"></ion-input>

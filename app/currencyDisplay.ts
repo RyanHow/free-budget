@@ -50,19 +50,22 @@ export class CurrencyDisplay {
     if (this.checkValue === this.value) return this.formattedCurrencyCached;
     this.checkValue = this.value;
     
-    let pf = new PriceFormat(<any>{}, <any>{});
+    let pf = new PriceFormat(<any>{}, <any>{}, <any>{});
     let formattedVal = pf.formatIt(pf.fix_it(this.value));
+    formattedVal = formattedVal.replace("-", "");
     
     this.positive = true;
     if (parseFloat(this.value) < 0) {
         this.positive = false;
         if (this.highlightNegative) formattedVal = "(" + formattedVal + ")";
     }
+
     if (this.invertedCurrency) this.positive = !this.positive;
-    
-    if (this.showPositive && !this.highlightPositive && formattedVal != "0.00") {
-        formattedVal = (this.positive ? "+" : "-") + formattedVal;
+
+    if (this.positive && this.showPositive && formattedVal != "0.00") {
+        formattedVal = "+" + formattedVal;
     } 
+
 
     this.formattedCurrencyCached = formattedVal;
 

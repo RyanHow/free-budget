@@ -1,19 +1,19 @@
-import {Page, Modal, NavController, ViewController, NavParams, Alert} from 'ionic-angular';
+import {Page, Modal, NavController, ViewController, NavParams, Alert, AlertController} from 'ionic-angular';
 import {FormBuilder, Validators, ControlGroup, Control} from '@angular/common';
 import {Db} from '../../db/db';
 import {Category} from '../../data/records/category';
 import {Transaction} from '../../data/records/transaction';
 import {Dbms} from '../../db/dbms.service';
 import {InitSimpleTransaction} from '../../data/transactions/initSimpleTransaction';
-import * as moment from 'moment';
-import {PriceFormat} from '../../priceFormat';
+import {CurrencyField} from '../../components/currency-field';
 import {Configuration} from '../../configuration.service';
 import {NoFocusDirective} from '../../noFocus';
 import {Component} from '@angular/core';
+import {Utils} from '../../utils';
 
 @Component({
   templateUrl: "build/modals/add-edit-transaction/add-edit-transaction.html",
-  directives: [PriceFormat, NoFocusDirective]
+  directives: [CurrencyField, NoFocusDirective]
 })
 export class AddEditTransactionModal {
   form: ControlGroup;
@@ -24,7 +24,7 @@ export class AddEditTransactionModal {
   field: any = {};
   expense : boolean = true;
   
-  constructor(private configuration : Configuration, public viewCtrl: ViewController, private formBuilder: FormBuilder, private navParams: NavParams, private dbms : Dbms, private nav : NavController) {
+  constructor(private configuration : Configuration, public viewCtrl: ViewController, private formBuilder: FormBuilder, private navParams: NavParams, private dbms : Dbms, private nav : NavController, private alertController : AlertController) {
     this.viewCtrl = viewCtrl;
     this.nav = nav;
     
@@ -39,7 +39,7 @@ export class AddEditTransactionModal {
       this.editing = true;
       this.transaction = this.budget.transactionProcessor.table(Transaction).by("id", navParams.data.transactionId);
 
-      (<Control>this.form.controls["date"]).updateValue(moment(this.transaction.date, "YYYYMMDD").format("YYYY-MM-DD"));
+      (<Control>this.form.controls["date"]).updateValue(Utils.toIonicFromYYYYMMDD(this.transaction.date));
       if (this.transaction.amount.cmp(Big(0)) < 0) {
         this.expense = false;
         this.field.amount = this.transaction.amount.times(-1);
@@ -49,7 +49,7 @@ export class AddEditTransactionModal {
       (<Control>this.form.controls["description"]).updateValue(this.transaction.description);
     } else {
       this.editing = false;
-      (<Control>this.form.controls["date"]).updateValue(moment().format("YYYY-MM-DD"));
+      (<Control>this.form.controls["date"]).updateValue(Utils.nowIonic());
     }
     
   }
@@ -68,7 +68,7 @@ export class AddEditTransactionModal {
     if (!this.expense) {
       t.amount = t.amount.times(-1);
     }
-    t.date = moment(this.form.controls["date"].value.split("T")[0]).format("YYYYMMDD");
+    t.date = Utils.toYYYYMMDDFromIonic(this.form.controls["date"].value);
     t.description = this.form.controls["description"].value;
     t.categoryId = this.category.id;
     this.budget.applyTransaction(t);
@@ -81,7 +81,7 @@ export class AddEditTransactionModal {
   }
   
   deleteTransactionConfirm() {
-    let confirm = Alert.create({
+    let confirm = this.alertController.create({
       title: 'Delete?',
       message: 'Are you sure you want to delete this transaction?',
       buttons: [
@@ -100,7 +100,7 @@ export class AddEditTransactionModal {
       ]
     });
 
-    this.nav.present(confirm);
+    confirm.present();
   }
   
   deleteTransaction() {

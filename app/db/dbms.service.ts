@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Db} from './db';
-import {LocalStoragePersistenceProvider} from './localStoragePersistenceProvider';
+import {DbPersistenceProvider} from './dbPersistenceProvider';
+import {PersistenceProviderManager} from './persistenceProviderManager';
 import * as Loki from 'lokijs';
 import {UUID} from 'angular2-uuid';
 import {TransactionSerializer} from './transactionSerializer.service';
@@ -9,32 +10,32 @@ import {TransactionSerializer} from './transactionSerializer.service';
 export class Dbms {
     
     private loki : Loki;
-    private persistenceProvider : LocalStoragePersistenceProvider;
+    private persistenceProvider : DbPersistenceProvider;
     public dbs : Array<Db>;
     private dbMap : Map<string, Db>;
     public initialising : boolean;
         
-    constructor(private transactionSerializer : TransactionSerializer) {
+    constructor(private transactionSerializer : TransactionSerializer, persistenceProviderManager : PersistenceProviderManager) {
+        this.persistenceProvider = persistenceProviderManager.provide();
         this.loki = new Loki(null);
         this.loki.autosaveDisable();
-        this.persistenceProvider = new LocalStoragePersistenceProvider("A", transactionSerializer);
-        
         this.dbs = [];
         this.dbMap = new Map<string, Db>();
 
     }
     
-    init() {
+    init() : Promise<void> {
         this.initialising = true;
 
+        let inits = new Array<Promise<any>>();
 
         this.persistenceProvider.dbs().forEach((dbId) => {
-            this.createDb(dbId);
+            inits.push(this.createDb(dbId));
         });
 
-        this.initialising = false;
-
         //this.fireEvent("initialised", true);
+
+        return Promise.all(inits).then(() => {this.initialising = false;});
     }
     
     
@@ -42,9 +43,9 @@ export class Dbms {
         return this.dbMap.get(id);
     }
     
-    createDb(id? : string) : Db {
+    createDb(id? : string) : Promise<Db> {
         
-        if (!id) id = UUID.UUID();
+        if (!id) id = UUID.UUID().split("-").join("");
 
         let db = new Db(id, this, this.persistenceProvider, this.loki, this.transactionSerializer);
         
@@ -52,10 +53,13 @@ export class Dbms {
         this.dbMap.set(id, db);
 
         if (!this.initialising) {
-            this.persistenceProvider.addDb(id);
+            return this.persistenceProvider.addDb(id).then(() => {
+                return db.init().then(() => db);
+            });
+        } else {
+            return db.init().then(() => db);
         }
 
-        return db;
     }
 
     deleteDb(id : string) {
@@ -63,9 +67,6 @@ export class Dbms {
         this.dbs.splice(this.dbs.indexOf(db), 1);
         this.dbMap.delete(id);
         db.fireEvent("deleted", {});
-        this.persistenceProvider.transactions(id).forEach(transaction => {
-            this.persistenceProvider.deleteTransaction(id, transaction.id);
-        });
         this.persistenceProvider.unlinkDb(id);
     }
 }

@@ -37,7 +37,7 @@ export class Configuration {
         
     }
     
-    configure() {
+    configure() : Promise<void> {
         this.initLogLevel();
 
         this.transactionSerializer.registerType(InitCategoryTransaction);
@@ -57,6 +57,7 @@ export class Configuration {
         // Unique to this device and installation
         this.deviceInstallationId = this.deviceId + "-" + this.installationId;
         
+        return Promise.resolve();
     }
 
     initLogLevel() {

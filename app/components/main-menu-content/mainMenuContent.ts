@@ -1,4 +1,4 @@
-import {IONIC_DIRECTIVES, Modal, Menu, NavController, Nav, App, Alert} from 'ionic-angular';
+import {IONIC_DIRECTIVES, Modal, ModalController, Menu, NavController, ViewController, Nav, App, Alert, AlertController} from 'ionic-angular';
 import {Component, Input, ViewChild} from '@angular/core';
 import {Dbms} from '../../db/dbms.service';
 import {Db} from '../../db/db';
@@ -24,10 +24,14 @@ export class MainMenuContent {
   nav : Nav;
   budgets :Db[];
 
-  constructor(private dbms : Dbms, private app : App, private configuration : Configuration) {
+  constructor(private dbms : Dbms, private app : App, private configuration : Configuration, private modalController : ModalController, private alertController : AlertController) {
     this.dbms = dbms;
     this.budgets = dbms.dbs;
     this.app = app;
+  }
+
+  isBudgetPageOpen() : boolean {
+    return false;
   }
   
   budgetName(budget : Db) : string {
@@ -35,6 +39,7 @@ export class MainMenuContent {
   }
   
   openBudget(budget : Db) {
+//    if (this.lastOpenedBudget() == budget && this.nav.root == BudgetPage) return;
     this.configuration.lastOpenedBudget(budget.id);
     this.nav.setRoot(BudgetPage, {'budget' : budget});
   }
@@ -59,31 +64,31 @@ export class MainMenuContent {
   }
 
   addBudget() {
-    let modal = Modal.create(AddBudgetModal);
+    let modal = this.modalController.create(AddBudgetModal);
 
-    modal.onDismiss((data) => {
+    modal.onDidDismiss((data) => {
       if (data && data.budgetName != "" ) {
-        let db = this.dbms.createDb();
-        db.activate();
-        let t = new InitBudgetTransaction();
-        t.budgetName = data.budgetName;
-        db.applyTransaction(t);
-        db.deactivate();
+        let db = this.dbms.createDb().then(db => {
+          db.activate();
+          let t = new InitBudgetTransaction();
+          t.budgetName = data.budgetName;
+          db.applyTransaction(t);
+          db.deactivate();
 
-        this.nav.setRoot(BudgetPage, {'budget' : db});
-
+          this.nav.setRoot(BudgetPage, {'budget' : db});
+        });
       }
     });
 
-    this.nav.present(modal);
+    modal.present();
 
   }
 
   renameBudget() {
-    let modal = Modal.create(AddBudgetModal);
+    let modal = this.modalController.create(AddBudgetModal);
     modal.data.budgetName = this.lastOpenedBudget().name();
 
-    modal.onDismiss((data) => {
+    modal.onDidDismiss((data) => {
       if (data && data.budgetName != "" && data.budgetName != this.lastOpenedBudget().name()) {
         let t = InitBudgetTransaction.getFrom(this.lastOpenedBudget());
         t.budgetName = data.budgetName;
@@ -91,12 +96,12 @@ export class MainMenuContent {
       }
     });
 
-    this.nav.present(modal);
+    modal.present();
 
   }
 
   deleteBudget() {
-    let confirm = Alert.create({
+    let confirm = this.alertController.create({
       title: 'Delete?',
       message: 'Are you sure you want to delete this budget (' + this.lastOpenedBudget().name() + ')?',
       buttons: [
@@ -115,7 +120,7 @@ export class MainMenuContent {
       ]
     });
 
-    this.nav.present(confirm);
+    confirm.present();
   }
 
   doDeleteBudget() {

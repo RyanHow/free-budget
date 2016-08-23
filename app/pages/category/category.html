@@ -22,7 +22,7 @@
     <button class="category-transaction-item" ion-item detail-none (click)="editTransaction(t)" *ngFor="let t of transactions.data()">
       <span item-left>{{t.date | dFormat}}</span> {{t.description}}
         <ion-note item-right><ion-icon small *ngIf="t.config.transactionType == 'InitCategoryTransferTransaction'" name="shuffle" ></ion-icon></ion-note>
-      <currency-display invertedCurrency highlightPositive [value]="t.amount" item-right></currency-display>
+      <currency-display invertedCurrency highlightPositive showPositive [value]="t.amount" item-right></currency-display>
     </button>
   </ion-list>    
 </ion-content>

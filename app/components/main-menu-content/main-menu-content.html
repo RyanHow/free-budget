@@ -1,22 +1,17 @@
 <ion-item-group *ngIf="lastOpenedBudget()">
-    <ion-item-divider light>
-        <ion-icon name="checkbox-outline" item-left></ion-icon>
-        <b>{{budgetName(lastOpenedBudget())}}</b>
-    </ion-item-divider>
+    <button ion-item detail-none menuClose (click)="isBudgetPageOpen() || openBudget(lastOpenedBudget())">Back to {{budgetName(lastOpenedBudget())}}</button>
     <button ion-item detail-none menuClose (click)="renameBudget()">Rename Budget...</button>
     <button ion-item detail-none menuClose (click)="deleteBudget()">Delete Budget...</button>
 </ion-item-group>
 <ion-item-group>
-    <ion-item-divider light>
-        <ion-icon name="folder-open-outline" md="md-folder-open" item-left></ion-icon>
-        Open a Budget
+    <ion-item-divider *ngIf="lastOpenedBudget()" light>
+        More
     </ion-item-divider>
-    <button ion-item menuClose *ngFor="let b of budgets" (click)="openBudget(b)">{{budgetName(b)}}</button>
+    <button [class.selectedBudget]="b == lastOpenedBudget()" ion-item menuClose *ngFor="let b of budgets" (click)="openBudget(b)">{{budgetName(b)}}</button>
     <button ion-item menuClose detail-none (click)="addBudget()">Create New Budget...</button>
 </ion-item-group>
 <ion-item-group>
     <ion-item-divider light>
-        <ion-icon name="options" item-left></ion-icon>
         Options
     </ion-item-divider>
     <button ion-item menuClose (click)="goHome()">Home</button>

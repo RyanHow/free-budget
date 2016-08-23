@@ -1,4 +1,4 @@
-import {Page, Modal, NavController, NavParams, Refresher, Popover, ViewController} from 'ionic-angular';
+import {Page, Modal, NavController, NavParams, Refresher, Popover, ViewController, ModalController, PopoverController} from 'ionic-angular';
 import {Component} from '@angular/core';
 import {Dbms} from '../../db/dbms.service';
 import {Db} from '../../db/db';
@@ -26,7 +26,7 @@ export class CategoryPage {
   transactions: LokiDynamicView<Transaction>;
   transactionTable: LokiCollection<Transaction>;
   
-  constructor(private nav: NavController, private dbms : Dbms, private params : NavParams, private editorProvider : EditorProvider){
+  constructor(private nav: NavController, private dbms : Dbms, private params : NavParams, private editorProvider : EditorProvider, private modalController : ModalController, private popoverController : PopoverController){
     this.nav = nav;
     this.dbms = dbms;
     
@@ -40,27 +40,27 @@ export class CategoryPage {
   }
   
   showMore(event) {
-    let popover = Popover.create(CategoryPopover, {categoryPage : this});
-    this.nav.present(popover, {
+    let popover = this.popoverController.create(CategoryPopover, {categoryPage : this});
+    popover.present({
       ev: event
     });
   }
  
   editCategory() {
-    let modal = Modal.create(AddEditCategoryModal);
+    let modal = this.modalController.create(AddEditCategoryModal);
     modal.data.budgetId = this.budget.id;
     modal.data.categoryId = this.category.id;
 
-    this.nav.present(modal);
+    modal.present();
 
   }
 
   editSimpleWeekly() {
-    let modal = Modal.create(AddEditCategorySimpleWeeklyModal);
+    let modal = this.modalController.create(AddEditCategorySimpleWeeklyModal);
     modal.data.budgetId = this.budget.id;
     modal.data.categoryId = this.category.id;
 
-    this.nav.present(modal);
+    modal.present();
 
   }
 
@@ -71,18 +71,18 @@ export class CategoryPage {
   }
 
   addTransaction() {
-    let modal = Modal.create(AddEditTransactionModal);
+    let modal = this.modalController.create(AddEditTransactionModal);
     modal.data.budgetId = this.budget.id;
     modal.data.categoryId = this.category.id;
-    this.nav.present(modal);
+    modal.present();
 
   }
   
   addTransfer() {
-    let modal = Modal.create(AddEditTransferModal);
+    let modal = this.modalController.create(AddEditTransferModal);
     modal.data.budgetId = this.budget.id;
     modal.data.fromCategoryId = this.category.id;
-    this.nav.present(modal);
+    modal.present();
   }
   
   editTransaction(transaction : Transaction) {
@@ -91,11 +91,15 @@ export class CategoryPage {
     modal.data.budgetId = this.budget.id;
     modal.data.categoryId = this.category.id;
     modal.data.transactionId = transaction.id;
-    this.nav.present(modal);
+    modal.present();
   }
 
   ionViewWillEnter() {
-    this.transactions = this.transactionTable.addDynamicView("categoryTransactions_" + this.category.id).applyFind({"categoryId" : this.category.id}).applySimpleSort("date", true);
+    this.transactions = this.transactionTable.addDynamicView("categoryTransactions_" + this.category.id)
+    .applyFind({"categoryId" : this.category.id})
+    //.applySimpleSort("date", true)
+    .applySortCriteria([["date", true], ["id", true]]);
+
     JL().debug("WIll Enter Dynamic Views " + this.transactionTable.DynamicViews.length);
 
   }

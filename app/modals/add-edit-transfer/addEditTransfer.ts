@@ -1,15 +1,17 @@
-import {Page, Modal, NavController, ViewController, NavParams, Alert} from 'ionic-angular';
+import {Page, Modal, NavController, ViewController, NavParams, Alert, AlertController} from 'ionic-angular';
 import {FormBuilder, Validators, ControlGroup, Control} from '@angular/common';
 import {Db} from '../../db/db';
 import {Category} from '../../data/records/category';
 import {Transaction} from '../../data/records/transaction';
 import {Dbms} from '../../db/dbms.service';
 import {InitCategoryTransferTransaction} from '../../data/transactions/initCategoryTransferTransaction';
-import * as moment from 'moment';
+import {CurrencyField} from '../../components/currency-field';
 import {Component} from '@angular/core';
+import {Utils} from '../../utils';
 
 @Component({
-  templateUrl: "build/modals/add-edit-transfer/add-edit-transfer.html"
+  templateUrl: "build/modals/add-edit-transfer/add-edit-transfer.html",
+  directives: [CurrencyField]
 })
 export class AddEditTransferModal {
   form: ControlGroup;
@@ -18,14 +20,15 @@ export class AddEditTransferModal {
   transfer: InitCategoryTransferTransaction;
   categories: Category[];
   transactionRecord: Transaction;
-  
-  constructor(public viewCtrl: ViewController, private formBuilder: FormBuilder, private navParams: NavParams, private dbms : Dbms, private nav : NavController) {
+  amount : any;
+
+  constructor(public viewCtrl: ViewController, private formBuilder: FormBuilder, private navParams: NavParams, private dbms : Dbms, private nav : NavController, private alertController : AlertController) {
     this.viewCtrl = viewCtrl;
     this.nav = nav;
     
     this.form = formBuilder.group({
       "date": ["", Validators.required],
-      "amount": ["", Validators.required],
+      //"amount": ["", Validators.required],
       "description": ["", Validators.required],
       "categoryFrom": ["", Validators.required],
       "categoryTo": ["", Validators.required]
@@ -40,8 +43,9 @@ export class AddEditTransferModal {
       this.transactionRecord = this.budget.transactionProcessor.table(Transaction).by("id", navParams.data.transactionId);
       this.transfer = InitCategoryTransferTransaction.getFrom(this.budget, this.transactionRecord);
       
-      (<Control>this.form.controls["date"]).updateValue(this.transfer.date);
-      (<Control>this.form.controls["amount"]).updateValue(this.transfer.amount);
+      (<Control>this.form.controls["date"]).updateValue(Utils.toIonicFromYYYYMMDD(this.transfer.date));
+      //(<Control>this.form.controls["amount"]).updateValue(this.transfer.amount);
+      this.amount = this.transfer.amount;
       (<Control>this.form.controls["description"]).updateValue(this.transfer.description);
       (<Control>this.form.controls["categoryFrom"]).updateValue(this.transfer.fromCategoryId);
       (<Control>this.form.controls["categoryTo"]).updateValue(this.transfer.toCategoryId);
@@ -49,7 +53,7 @@ export class AddEditTransferModal {
       this.editing = false;
       this.transfer = new InitCategoryTransferTransaction();
       (<Control>this.form.controls["categoryFrom"]).updateValue(navParams.data.fromCategoryId);
-      (<Control>this.form.controls["date"]).updateValue(moment().format("YYYYMMDD"));
+      (<Control>this.form.controls["date"]).updateValue(Utils.nowIonic());
     }
     
     
@@ -58,8 +62,9 @@ export class AddEditTransferModal {
   submit(event : Event) {
     event.preventDefault();
     
-    this.transfer.amount = new Big(this.form.controls["amount"].value);
-    this.transfer.date = this.form.controls["date"].value;
+    //this.transfer.amount = new Big(this.form.controls["amount"].value);
+    this.transfer.amount = new Big(this.amount);
+    this.transfer.date = Utils.toYYYYMMDDFromIonic(this.form.controls["date"].value);
     this.transfer.description = this.form.controls["description"].value;
     this.transfer.fromCategoryId = +this.form.controls["categoryFrom"].value;
     this.transfer.toCategoryId = +this.form.controls["categoryTo"].value;
@@ -73,7 +78,7 @@ export class AddEditTransferModal {
   }
   
   deleteTransactionConfirm() {
-    let confirm = Alert.create({
+    let confirm = this.alertController.create({
       title: 'Delete?',
       message: 'Are you sure you want to delete this transaction?',
       buttons: [
@@ -92,7 +97,7 @@ export class AddEditTransferModal {
       ]
     });
 
-    this.nav.present(confirm);
+    confirm.present();
   }
   
   deleteTransaction() {

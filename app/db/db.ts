@@ -1,4 +1,4 @@
-import {LocalStoragePersistenceProvider} from './localStoragePersistenceProvider';
+import {DbPersistenceProvider} from './dbPersistenceProvider';
 import {Dbms} from './dbms.service';
 import {Transaction} from './transaction';
 import {TransactionProcessor} from './transactionProcessor';
@@ -6,13 +6,10 @@ import {TransactionSerializer} from './transactionSerializer.service';
 
 export class Db {
     
-    private persistenceProvider : LocalStoragePersistenceProvider;
-    public id : string;
-    private dbms : Dbms;
-    private loki : Loki;
     private transactions: LokiCollection<Transaction>;
     public sortedTransactions: LokiDynamicView<Transaction>;
     private active : boolean;
+    private initialised : boolean;
     private activating : boolean;
     private transactionIdHead : number;
     private eventListeners : Array<any>;
@@ -22,26 +19,25 @@ export class Db {
         return this.id;
     }
 
-    constructor(id : string, dbms : Dbms , persistenceProvider : LocalStoragePersistenceProvider, loki : Loki, private transactionSerializer : TransactionSerializer) {
-        this.id = id;
-        this.dbms = dbms;
-        this.persistenceProvider = persistenceProvider;
-        this.loki = loki;
+    constructor(public id : string, private dbms : Dbms , private persistenceProvider : DbPersistenceProvider, private loki : Loki, private transactionSerializer : TransactionSerializer) {
         this.active = false;
-        this.transactionProcessor = new TransactionProcessor(this, loki);
+        this.initialised = false;
+        this.transactionProcessor = new TransactionProcessor(this, this.loki);
         
-        this.transactions = loki.addCollection<Transaction>("transactions_" + id);
+        this.transactions = this.loki.addCollection<Transaction>("transactions_" + this.id);
         this.transactions.ensureUniqueIndex("id");
         this.eventListeners = [];
-                
-        this.persistenceProvider.transactions(this.id).forEach((transaction) => {
-            this.transactions.insert(transaction);
+    }
+
+    init() : Promise<void> {
+        return this.persistenceProvider.transactions(this.id).then(dbtransactions => {
+            dbtransactions.forEach((transaction) => {
+                this.transactions.insert(transaction);
+            });
+            this.sortedTransactions = this.transactions.addDynamicView("sortedTransactions_" + this.id);
+            this.sortedTransactions.applySimpleSort('id');
+            this.initialised = true;
         });
-
-        this.sortedTransactions = this.transactions.addDynamicView("sortedTransactions_" + id);
-        this.sortedTransactions.applySimpleSort('id');
-
-
     }
     
     isActive() : boolean {
@@ -49,6 +45,7 @@ export class Db {
     }
     
     activate() {
+        if (!this.initialised) throw new Error("Activate called when not yet initialised.");
         if (this.active) return;
         
         // Only if active... so do this on "activate" ?

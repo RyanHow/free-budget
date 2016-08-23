@@ -1,4 +1,4 @@
-import {Page, Modal, NavController, NavParams, Refresher} from 'ionic-angular';
+import {Page, Modal, NavController, NavParams, Refresher, ModalController} from 'ionic-angular';
 import {Dbms} from '../../db/dbms.service';
 import {Db} from '../../db/db';
 import {Category} from '../../data/records/category';
@@ -18,7 +18,7 @@ export class BudgetPage {
   budgetRecord : Budget;
   categories : Category[]
   
-  constructor(private nav: NavController, private dbms : Dbms, private params : NavParams, private engineFactory : EngineFactory){
+  constructor(private nav: NavController, private dbms : Dbms, private params : NavParams, private engineFactory : EngineFactory, private modalController : ModalController){
     this.nav = nav;
     this.dbms = dbms;
     
@@ -31,10 +31,10 @@ export class BudgetPage {
   }
   
   addCategory() {
-    let modal = Modal.create(AddEditCategoryModal);
+    let modal = this.modalController.create(AddEditCategoryModal);
     modal.data.budgetId = this.budget.id;
 
-    this.nav.present(modal);
+    modal.present();
 
   }
   
