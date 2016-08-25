@@ -117,10 +117,10 @@ export class CategoryPage {
 @Component({
   template: `
     <ion-list>
-      <button ion-item detail-none (click)="categoryPage.editSimpleWeekly();close()">Weekly Amount</button>
-      <button ion-item detail-none (click)="categoryPage.editCategory();close()">Edit / Delete Category</button>
-      <button ion-item detail-none (click)="categoryPage.addTransaction();close()">New Transaction</button>
-      <button ion-item detail-none (click)="categoryPage.addTransfer();close()">Transfer Funds</button>
+      <button ion-item detail-none (click)="close(categoryPage.editSimpleWeekly)">Weekly Amount</button>
+      <button ion-item detail-none (click)="close(categoryPage.editCategory)">Edit / Delete Category</button>
+      <button ion-item detail-none (click)="close(categoryPage.addTransaction)">New Transaction</button>
+      <button ion-item detail-none (click)="close(categoryPage.addTransfer)">Transfer Funds</button>
     </ion-list>
   `
 })
@@ -132,8 +132,8 @@ class CategoryPopover {
     this.categoryPage = <CategoryPage>viewCtrl.data.categoryPage;
   }
 
-  close() {
-    this.viewCtrl.dismiss();
+  close(thenFn: Function) {
+    this.viewCtrl.dismiss({navOptions: {animate: false, transitionDelay: 0}}).then(() => { thenFn.call(this.categoryPage); });
   }
 
 }
