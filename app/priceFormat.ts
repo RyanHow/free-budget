@@ -1,5 +1,5 @@
-import {Directive, ElementRef, Input , Output, Optional,HostBinding, EventEmitter} from '@angular/core';
-import {NgModel, NgControl,Control} from '@angular/common';
+import {Directive, ElementRef} from '@angular/core';
+import {NgModel} from '@angular/forms';
 
 @Directive({
   selector: '[ngModel][priceFormat]',
@@ -15,7 +15,7 @@ export class PriceFormat {
     input;
     displayInput;
 
-    constructor(private model : NgModel, private ctrl : NgControl, eleRef : ElementRef) {
+    constructor(private model : NgModel, eleRef : ElementRef) {
         this.element = eleRef.nativeElement;
     }
     
@@ -44,7 +44,7 @@ export class PriceFormat {
     
     onNgModelChange(nv : any) {
         nv = this.formatIt(nv);
-        if (this.model.value != nv.toUpperCase() && this.model.value != this.modelPreviousValue) {
+        if (this.model.value !== nv.toUpperCase() && this.model.value !== this.modelPreviousValue) {
             this.modelPreviousValue = this.model.value;
             this.model.valueAccessor.writeValue(nv);
             this.model.viewToModelUpdate(nv);

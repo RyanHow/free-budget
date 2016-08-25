@@ -1,7 +1,6 @@
 import {Transaction} from '../../db/transaction';
 import {Transaction as TransactionRecord} from '../records/transaction';
 import {TransactionProcessor} from '../../db/transactionProcessor';
-import {Budget} from '../records/budget';
 import {Db} from '../../db/db';
 
 

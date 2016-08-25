@@ -1,9 +1,7 @@
 import {Page, Modal, ModalController, NavController} from 'ionic-angular';
 import {AddBudgetModal} from '../../modals/add-budget/addBudget';
 import {BudgetPage} from '../../pages/budget/budget';
-import {BudgetApp} from '../../app';
 import {Dbms} from '../../db/dbms.service';
-import {Db} from '../../db/db';
 import {InitBudgetTransaction} from '../../data/transactions/initBudgetTransaction';
 
 @Page({

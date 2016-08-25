@@ -14,10 +14,10 @@
 </ion-header>
 <ion-content>
     <div padding>
-        <form [ngFormModel]="form" (submit)="submit($event)">
+        <form #form="ngForm" (submit)="submit($event)">
             <ion-item>
                 <ion-label>Category Name</ion-label>
-                <ion-input type="text" ngControl="categoryName" [attr.autofocus]="editing ? null : true" ></ion-input>
+                <ion-input type="text" name="categoryName" [(ngModel)]="categoryName" [attr.autofocus]="editing ? null : true" required></ion-input>
             </ion-item>
         </form>
     </div>

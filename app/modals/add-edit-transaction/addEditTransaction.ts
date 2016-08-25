@@ -1,5 +1,4 @@
-import {Page, Modal, NavController, ViewController, NavParams, Alert, AlertController} from 'ionic-angular';
-import {FormBuilder, Validators, ControlGroup, Control} from '@angular/common';
+import {NavController, ViewController, NavParams, AlertController} from 'ionic-angular';
 import {Db} from '../../db/db';
 import {Category} from '../../data/records/category';
 import {Transaction} from '../../data/records/transaction';
@@ -12,64 +11,60 @@ import {Component} from '@angular/core';
 import {Utils} from '../../utils';
 
 @Component({
-  templateUrl: "build/modals/add-edit-transaction/add-edit-transaction.html",
+  templateUrl: 'build/modals/add-edit-transaction/add-edit-transaction.html',
   directives: [CurrencyField, NoFocusDirective]
 })
 export class AddEditTransactionModal {
-  form: ControlGroup;
+
+  data: { expense: boolean; date?: string; description?: string; amount?: string } = {expense: true};
+
   budget: Db;
   editing: boolean;
   category: Category;
   transaction: Transaction;
-  field: any = {};
-  expense : boolean = true;
   
-  constructor(private configuration : Configuration, public viewCtrl: ViewController, private formBuilder: FormBuilder, private navParams: NavParams, private dbms : Dbms, private nav : NavController, private alertController : AlertController) {
+  constructor(private configuration: Configuration, public viewCtrl: ViewController, private navParams: NavParams, private dbms: Dbms, private nav: NavController, private alertController: AlertController) {
     this.viewCtrl = viewCtrl;
     this.nav = nav;
     
-    this.form = formBuilder.group({
-      "date": ["", Validators.required],
-      "description": ["", Validators.required]
-    });
     this.budget = dbms.getDb(navParams.data.budgetId);
-    this.category = this.budget.transactionProcessor.table(Category).by("id", navParams.data.categoryId);
+    this.category = this.budget.transactionProcessor.table(Category).by('id', navParams.data.categoryId);
 
     if (navParams.data.transactionId) {
       this.editing = true;
-      this.transaction = this.budget.transactionProcessor.table(Transaction).by("id", navParams.data.transactionId);
+      this.transaction = this.budget.transactionProcessor.table(Transaction).by('id', navParams.data.transactionId);
 
-      (<Control>this.form.controls["date"]).updateValue(Utils.toIonicFromYYYYMMDD(this.transaction.date));
+      this.data.date = Utils.toIonicFromYYYYMMDD(this.transaction.date);
       if (this.transaction.amount.cmp(Big(0)) < 0) {
-        this.expense = false;
-        this.field.amount = this.transaction.amount.times(-1);
+        this.data.expense = false;
+        this.data.amount = this.transaction.amount.times(-1).toString();
       } else {
-        this.field.amount = this.transaction.amount;
+        this.data.amount = this.transaction.amount.toString();
       }
-      (<Control>this.form.controls["description"]).updateValue(this.transaction.description);
+      this.data.description = this.transaction.description;
     } else {
       this.editing = false;
-      (<Control>this.form.controls["date"]).updateValue(Utils.nowIonic());
+      this.data.date = Utils.nowIonic();
     }
     
   }
     
-  submit(event : Event) {
+  submit(event: Event) {
     event.preventDefault();
 
-    var t : InitSimpleTransaction;
+    var t: InitSimpleTransaction;
     if (! this.editing) {
       t = new InitSimpleTransaction();
     } else {
       t = InitSimpleTransaction.getFrom(this.budget, this.transaction);
     }    
     
-    t.amount = new Big((this.field.amount+"").replace(",", ""));
-    if (!this.expense) {
+    t.amount = new Big((this.data.amount).replace(',', ''));
+    if (!this.data.expense) {
       t.amount = t.amount.times(-1);
     }
-    t.date = Utils.toYYYYMMDDFromIonic(this.form.controls["date"].value);
-    t.description = this.form.controls["description"].value;
+    t.date = Utils.toYYYYMMDDFromIonic(this.data.date);
+    t.description = this.data.description;
     t.categoryId = this.category.id;
     this.budget.applyTransaction(t);
 
@@ -111,6 +106,6 @@ export class AddEditTransactionModal {
   }
   
   toggleExpense() {
-    this.expense = !this.expense;
+    this.data.expense = !this.data.expense;
   }
 } 

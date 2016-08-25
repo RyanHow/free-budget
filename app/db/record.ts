@@ -1,4 +1,3 @@
-import {TransactionProcessor} from './transactionProcessor';
 
 export abstract class Record<T> {
     tableCreationOptions() : any {};

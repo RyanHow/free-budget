@@ -31,7 +31,7 @@ export class CategoryPage {
     this.dbms = dbms;
     
     this.budget = params.data.budget;
-    let categoryTable = this.budget.transactionProcessor.table(Category)
+    let categoryTable = this.budget.transactionProcessor.table(Category);
     this.category = categoryTable.by("id", params.data.categoryId);
     this.budgetRecord = this.budget.transactionProcessor.single(Budget);
     this.transactionTable = this.budget.transactionProcessor.table(Transaction);

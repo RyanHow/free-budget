@@ -1,5 +1,6 @@
 import {Record} from '../../db/record';
-import {Processor} from '../../engine/processor'
+import {Processor} from '../../engine/processor';
+
 export class Category extends Record<Category> {
     
     public id : number;

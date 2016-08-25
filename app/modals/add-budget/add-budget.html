@@ -14,10 +14,10 @@
 </ion-header>
 <ion-content padding>
 
-    <form [ngFormModel]="form" (submit)="submit($event)">
+    <form #form="ngForm" (submit)="submit($event)">
         <ion-item>
             <ion-label>Budget Name</ion-label>
-            <ion-input type="text" ngControl="budgetName" autofocus></ion-input>
+            <ion-input type="text" [(ngModel)]="budgetName" name="budgetName" autofocus required></ion-input>
         </ion-item>
     </form>
 </ion-content>

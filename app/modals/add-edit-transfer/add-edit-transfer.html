@@ -14,30 +14,30 @@
 </ion-header>
 <ion-content>
     <div padding>
-        <form [ngFormModel]="form" (submit)="submit($event)">
+        <form #form="ngForm" (submit)="submit($event)">
             <ion-item>
                 <ion-label>Amount</ion-label>
-                <ion-input currency-field  [(ngModel)]="amount" [attr.autofocus]="editing ? null : true"></ion-input>
+                <ion-input currency-field required name="amount" [(ngModel)]="data.amount" [attr.autofocus]="editing ? null : true"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label>From</ion-label>
-                <ion-select ngControl="categoryFrom">
+                <ion-select required name="categoryFrom" [(ngModel)]="data.categoryFrom">
                     <ion-option *ngFor="let c of categories" value="{{c.id}}">{{c.name}}</ion-option>    
                 </ion-select>
             </ion-item>
             <ion-item>
                 <ion-label>To</ion-label>
-                <ion-select ngControl="categoryTo">
+                <ion-select required name="categoryTo" [(ngModel)]="data.categoryTo">
                     <ion-option *ngFor="let c of categories" value="{{c.id}}">{{c.name}}</ion-option>    
                 </ion-select>
             </ion-item>
             <ion-item>
                 <ion-label>Description</ion-label>
-                <ion-input type="text" ngControl="description"></ion-input>
+                <ion-input type="text" name="description" [(ngModel)]="data.description"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label>Date</ion-label>
-                <ion-datetime displayFormat="MMM D, YYYY" pickerFormat="MMM D YYYY" ngControl="date"></ion-datetime>
+                <ion-datetime displayFormat="MMM D, YYYY" pickerFormat="MMM D YYYY" name="date" [(ngModel)]="data.date"></ion-datetime>
             </ion-item>
         </form>
     </div>

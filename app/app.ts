@@ -1,21 +1,23 @@
-import {Platform, NavController, Nav, ionicBootstrap} from 'ionic-angular';
-import {Injectable, ViewChild, Component} from '@angular/core';
+import {Platform, Nav, ionicBootstrap} from 'ionic-angular';
+import {ViewChild, Component} from '@angular/core';
 import {StatusBar} from 'ionic-native';
 import {HomePage} from './pages/home/home';
 import {BudgetPage} from './pages/budget/budget';
-import {MainMenuContent} from './components/main-menu-content/mainMenuContent'
-import {CurrencyDisplay} from './currencyDisplay'
+import {MainMenuContent} from './components/main-menu-content/mainMenuContent';
 import {Dbms} from './db/dbms.service';
 import {PersistenceProviderManager} from './db/PersistenceProviderManager';
-import {EditorProvider} from './editorProvider.service';
+import {EditorProvider, ModalProvider} from './editorProvider.service';
 import {Configuration} from './configuration.service';
-import {Db} from './db/db';
 import {TransactionSerializer} from './db/transactionSerializer.service';
 import {EngineFactory} from './engine/engineFactory.service';
 import {Device} from 'ionic-native';
-import {PriceFormat} from './priceFormat';
-import {UppercaseDirective} from './uppercase';
-import {NoFocusDirective} from './nofocus';
+import {InitBudgetTransaction} from './data/transactions/initBudgetTransaction';
+import {InitCategoryTransaction} from './data/transactions/initCategoryTransaction';
+import {InitSimpleTransaction} from './data/transactions/initSimpleTransaction';
+import {InitCategoryTransferTransaction} from './data/transactions/initCategoryTransferTransaction';
+import {InitCategorySimpleWeeklyTransaction} from './data/transactions/initCategorySimpleWeeklyTransaction';
+import {AddEditTransferModal} from './modals/add-edit-transfer/addEditTransfer';
+import {AddEditTransactionModal} from './modals/add-edit-transaction/addEditTransaction';
 
 JL().info("Reading App");
 
@@ -24,11 +26,11 @@ JL().info("Reading App");
   directives: [MainMenuContent]
 })
 export class BudgetApp {
-  rootPage: any;// = HomePage;
+  rootPage: any; // = HomePage;
   ready: boolean;
-  @ViewChild(Nav) nav: Nav
+  @ViewChild(Nav) nav: Nav;
 
-  constructor(platform: Platform, configuration : Configuration, dbms : Dbms, persistenceProviderManager : PersistenceProviderManager) {
+  constructor(platform: Platform, private configuration: Configuration, dbms: Dbms, persistenceProviderManager: PersistenceProviderManager, private transactionSerializer: TransactionSerializer, private editorProvider: EditorProvider) {
     JL().info("Constructing App");
     
     platform.ready().then(() => {
@@ -50,6 +52,8 @@ export class BudgetApp {
         JL().info("Loading Configuration");
         return configuration.configure();
       }).then(() => {
+        this.registerTransactions();
+        this.registerEditorProviders();
         JL().info("Loading Configuration Done");
         JL().info("Initialising Dbms");
         return dbms.init();
@@ -83,8 +87,32 @@ export class BudgetApp {
     
   }
   
+  registerEditorProviders() {
+    this.editorProvider.registerModalProvider(new TransactionModalProvider(new InitCategoryTransferTransaction().getTypeId(), AddEditTransferModal));
+    this.editorProvider.registerModalProvider(new TransactionModalProvider(new InitSimpleTransaction().getTypeId(), AddEditTransactionModal));
+  }
+
+  registerTransactions() {
+    this.transactionSerializer.registerType(InitCategoryTransaction);
+    this.transactionSerializer.registerType(InitCategoryTransferTransaction);
+    this.transactionSerializer.registerType(InitSimpleTransaction);
+    this.transactionSerializer.registerType(InitBudgetTransaction);
+    this.transactionSerializer.registerType(InitCategorySimpleWeeklyTransaction);
+  }
 
 }
+
+class TransactionModalProvider extends ModalProvider {
+    
+    constructor(private transactionType : string, private modalClass : any) {
+        super();
+    }
+        
+    provide(params :any) : any {
+        if (params.transaction && params.transaction.config && params.transaction.config.transactionType == this.transactionType) return this.modalClass;
+    }
+}
+
 
 ionicBootstrap(BudgetApp, [
   Dbms,

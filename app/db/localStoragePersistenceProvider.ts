@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Transaction} from './transaction';
 import {TransactionSerializer} from './transactionSerializer.service';
-import {Db} from './db';
 import {DbPersistenceProvider} from './dbPersistenceProvider';
 
 @Injectable()

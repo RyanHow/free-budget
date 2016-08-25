@@ -1,5 +1,5 @@
 import {Pipe} from '@angular/core';
-import {PriceFormat} from "./priceFormat";
+import {PriceFormat} from './priceFormat';
 
 @Pipe({
     name: 'cFormat'

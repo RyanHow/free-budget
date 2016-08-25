@@ -1,7 +1,5 @@
-import {IONIC_DIRECTIVES, Menu, NavController, Nav} from 'ionic-angular';
 import {Component, Input} from '@angular/core';
-import {PriceFormat} from "./priceFormat";
-
+import {PriceFormat} from './priceFormat';
 @Component({
   selector: 'currency-display',
   template: '<span [class.positive-currency]="positive && highlightPositive" [class.negative-currency]="!positive && highlightNegative">{{formattedCurrencyCached}}</span>'
@@ -50,7 +48,7 @@ export class CurrencyDisplay {
     if (this.checkValue === this.value) return this.formattedCurrencyCached;
     this.checkValue = this.value;
     
-    let pf = new PriceFormat(<any>{}, <any>{}, <any>{});
+    let pf = new PriceFormat(<any>{}, <any>{});
     let formattedVal = pf.formatIt(pf.fix_it(this.value));
     formattedVal = formattedVal.replace("-", "");
     

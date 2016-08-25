@@ -1,9 +1,6 @@
 import {Device} from 'ionic-native';
 import {Injectable} from '@angular/core';
-import {TransactionSerializer} from './db/transactionSerializer.service';
-import {Transaction} from './data/records/transaction';
-import {EditorProvider, ModalProvider} from './editorProvider.service';
-// Other imports below that depend on Configuration - TODO: Separate out so the configurator is separate from the configuration to stop the 2 way dependencies
+
 
 @Injectable()
 export class Configuration {
@@ -33,21 +30,12 @@ export class Configuration {
     }
 
     
-    constructor(private transactionSerializer : TransactionSerializer, private editorProvider : EditorProvider) {
+    constructor() {
         
     }
     
     configure() : Promise<void> {
         this.initLogLevel();
-
-        this.transactionSerializer.registerType(InitCategoryTransaction);
-        this.transactionSerializer.registerType(InitCategoryTransferTransaction);
-        this.transactionSerializer.registerType(InitSimpleTransaction);
-        this.transactionSerializer.registerType(InitBudgetTransaction);
-        this.transactionSerializer.registerType(InitCategorySimpleWeeklyTransaction);
-                
-        this.editorProvider.registerModalProvider(new TransactionModalProvider(new InitCategoryTransferTransaction().getTypeId(), AddEditTransferModal));
-        this.editorProvider.registerModalProvider(new TransactionModalProvider(new InitSimpleTransaction().getTypeId(), AddEditTransactionModal));
 
         if (! localStorage.getItem("installationId")) localStorage.setItem("installationId", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;return v.toString(16);}));
         JL().info("Installation Id: " + localStorage.getItem("installationId"));
@@ -80,23 +68,6 @@ export class Configuration {
     
 }
 
-class TransactionModalProvider extends ModalProvider {
-    
-    constructor(private transactionType : string, private modalClass : any) {
-        super();
-    }
-        
-    provide(params :any) : any {
-        if (params.transaction && params.transaction.config && params.transaction.config.transactionType == this.transactionType) return this.modalClass;
-    }
-}
 
 
 
-import {InitBudgetTransaction} from './data/transactions/initBudgetTransaction';
-import {InitCategoryTransaction} from './data/transactions/initCategoryTransaction';
-import {InitSimpleTransaction} from './data/transactions/initSimpleTransaction';
-import {InitCategoryTransferTransaction} from './data/transactions/initCategoryTransferTransaction';
-import {InitCategorySimpleWeeklyTransaction} from './data/transactions/initCategorySimpleWeeklyTransaction';
-import {AddEditTransferModal} from './modals/add-edit-transfer/addEditTransfer';
-import {AddEditTransactionModal} from './modals/add-edit-transaction/addEditTransaction';

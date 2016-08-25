@@ -1,5 +1,4 @@
 import {Page, Modal, NavController, ViewController, NavParams, Alert, AlertController} from 'ionic-angular';
-import {FormBuilder, Validators, ControlGroup, Control} from '@angular/common';
 import {Db} from '../../db/db';
 import {Category} from '../../data/records/category';
 import {Dbms} from '../../db/dbms.service';
@@ -10,31 +9,28 @@ import {Component} from '@angular/core';
   templateUrl: "build/modals/add-edit-category/add-edit-category.html"
 })
 export class AddEditCategoryModal {
-  form: ControlGroup;
   budget: Db;
   editing: boolean;
   category: Category;
+  categoryName: string;
   
-  constructor(public viewCtrl: ViewController, private formBuilder: FormBuilder, private navParams: NavParams, private dbms : Dbms, private nav : NavController, private alertController : AlertController) {
+  constructor(public viewCtrl: ViewController, private navParams: NavParams, private dbms : Dbms, private nav : NavController, private alertController : AlertController) {
     this.viewCtrl = viewCtrl;
     this.nav = nav;
     
-    this.form = formBuilder.group({
-      categoryName: ["", Validators.required]
-    });
     this.budget = dbms.getDb(navParams.data.budgetId);
     
     if (navParams.data.categoryId) {
       this.editing = true;
       this.category = this.budget.transactionProcessor.table(Category).by("id", navParams.data.categoryId);
-      (<Control>this.form.controls["categoryName"]).updateValue(this.category.name);
+      this.categoryName = this.category.name;
     } else {
       this.editing = false;
     }
     
   }
   
-  submit(event : Event) {
+  submit(event: Event) {
     event.preventDefault();
 
     var t;
@@ -44,7 +40,7 @@ export class AddEditCategoryModal {
       t = InitCategoryTransaction.getFrom(this.budget, this.category);
     }
     
-    t.categoryName = this.form.controls["categoryName"].value;
+    t.categoryName = this.categoryName;
     this.budget.applyTransaction(t);
 
     this.viewCtrl.dismiss();

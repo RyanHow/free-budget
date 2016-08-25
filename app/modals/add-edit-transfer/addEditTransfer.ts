@@ -1,5 +1,4 @@
-import {Page, Modal, NavController, ViewController, NavParams, Alert, AlertController} from 'ionic-angular';
-import {FormBuilder, Validators, ControlGroup, Control} from '@angular/common';
+import {NavController, ViewController, NavParams, AlertController} from 'ionic-angular';
 import {Db} from '../../db/db';
 import {Category} from '../../data/records/category';
 import {Transaction} from '../../data/records/transaction';
@@ -14,25 +13,16 @@ import {Utils} from '../../utils';
   directives: [CurrencyField]
 })
 export class AddEditTransferModal {
-  form: ControlGroup;
+
+  data: { date?: string; description?: string; amount?: string; categoryFrom?: any; categoryTo?: any; } = {};
+
   budget: Db;
   editing: boolean;
   transfer: InitCategoryTransferTransaction;
   categories: Category[];
   transactionRecord: Transaction;
-  amount : any;
 
-  constructor(public viewCtrl: ViewController, private formBuilder: FormBuilder, private navParams: NavParams, private dbms : Dbms, private nav : NavController, private alertController : AlertController) {
-    this.viewCtrl = viewCtrl;
-    this.nav = nav;
-    
-    this.form = formBuilder.group({
-      "date": ["", Validators.required],
-      //"amount": ["", Validators.required],
-      "description": ["", Validators.required],
-      "categoryFrom": ["", Validators.required],
-      "categoryTo": ["", Validators.required]
-    });
+  constructor(public viewCtrl: ViewController, private navParams: NavParams, private dbms: Dbms, private nav: NavController, private alertController: AlertController) {
     this.budget = dbms.getDb(navParams.data.budgetId);
     
     this.categories = this.budget.transactionProcessor.table(Category).data;
@@ -43,17 +33,16 @@ export class AddEditTransferModal {
       this.transactionRecord = this.budget.transactionProcessor.table(Transaction).by("id", navParams.data.transactionId);
       this.transfer = InitCategoryTransferTransaction.getFrom(this.budget, this.transactionRecord);
       
-      (<Control>this.form.controls["date"]).updateValue(Utils.toIonicFromYYYYMMDD(this.transfer.date));
-      //(<Control>this.form.controls["amount"]).updateValue(this.transfer.amount);
-      this.amount = this.transfer.amount;
-      (<Control>this.form.controls["description"]).updateValue(this.transfer.description);
-      (<Control>this.form.controls["categoryFrom"]).updateValue(this.transfer.fromCategoryId);
-      (<Control>this.form.controls["categoryTo"]).updateValue(this.transfer.toCategoryId);
+      this.data.date = Utils.toIonicFromYYYYMMDD(this.transfer.date);
+      this.data.amount = this.transfer.amount + "";
+      this.data.description = this.transfer.description;
+      this.data.categoryFrom = this.transfer.fromCategoryId;
+      this.data.categoryTo = this.transfer.toCategoryId;
     } else {
       this.editing = false;
       this.transfer = new InitCategoryTransferTransaction();
-      (<Control>this.form.controls["categoryFrom"]).updateValue(navParams.data.fromCategoryId);
-      (<Control>this.form.controls["date"]).updateValue(Utils.nowIonic());
+      this.data.categoryFrom = navParams.data.fromCategoryId;
+      this.data.date = Utils.nowIonic();
     }
     
     
@@ -62,12 +51,11 @@ export class AddEditTransferModal {
   submit(event : Event) {
     event.preventDefault();
     
-    //this.transfer.amount = new Big(this.form.controls["amount"].value);
-    this.transfer.amount = new Big(this.amount);
-    this.transfer.date = Utils.toYYYYMMDDFromIonic(this.form.controls["date"].value);
-    this.transfer.description = this.form.controls["description"].value;
-    this.transfer.fromCategoryId = +this.form.controls["categoryFrom"].value;
-    this.transfer.toCategoryId = +this.form.controls["categoryTo"].value;
+    this.transfer.amount = new Big(this.data.amount);
+    this.transfer.date = Utils.toYYYYMMDDFromIonic(this.data.date);
+    this.transfer.description = this.data.description;
+    this.transfer.fromCategoryId = +this.data.categoryFrom;
+    this.transfer.toCategoryId = +this.data.categoryTo;
     this.budget.applyTransaction(this.transfer);
 
     this.viewCtrl.dismiss();
