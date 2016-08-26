@@ -1,6 +1,8 @@
 import {Directive, ElementRef} from '@angular/core';
 import {NgControl} from '@angular/forms';
 import MaskedInput from 'ionic2-input-mask';
+import {Configuration} from '../configuration.service';
+import {Platform} from 'ionic-angular';
 
 @Directive({
   host: {
@@ -8,22 +10,30 @@ import MaskedInput from 'ionic2-input-mask';
   },
   selector: 'ion-input[currency-field]'
 })
-export class CurrencyField2 extends MaskedInput {
+export class CurrencyField2 {
     
+    maskedInput: MaskedInput;
 
-    constructor(private elementRef: ElementRef, ngControl: NgControl) {
-        super(elementRef, ngControl);
-
-        this.textMaskConfig = <any> {mask: this.numberMask.bind(this), placeholderChar: '0'};
+    constructor(private elementRef: ElementRef, ngControl: NgControl, private platform: Platform, private configuration: Configuration) {
+        if (!(this.platform.is('ios') || this.platform.is('android'))) {
+            this.maskedInput = new MaskedInput(elementRef, ngControl);
+            this.maskedInput.textMaskConfig = <any> {mask: this.numberMask.bind(this), placeholderChar: '0'};
+        }
     }
     ngAfterViewInit(): void {
-        super.ngAfterViewInit();
-        // Note: This now works, BUT it breaks the masked input as we can't select or control caret position
-        // Note: It is only needed on some versions of android, apart from that should not be used
-        //this.elementRef.nativeElement.children[0].setAttribute('type', 'number');
+        if (!(this.platform.is('ios') || this.platform.is('android'))) {
+            this.maskedInput.ngAfterViewInit();
+        }
+        if (this.platform.is('ios') || this.platform.is('android')) {
+            this.elementRef.nativeElement.children[0].setAttribute('type', 'number');
+            this.elementRef.nativeElement.children[0].setAttribute('step', '0.01');
+        }
+
+        this.elementRef.nativeElement.children[0].setAttribute('placeholder', '0.00');
+
     }
     onInput(): void {
-        super.onInput();
+        this.maskedInput.onInput();
     }
 
 
