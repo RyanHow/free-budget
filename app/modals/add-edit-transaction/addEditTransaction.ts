@@ -4,7 +4,7 @@ import {Category} from '../../data/records/category';
 import {Transaction} from '../../data/records/transaction';
 import {Dbms} from '../../db/dbms.service';
 import {InitSimpleTransaction} from '../../data/transactions/initSimpleTransaction';
-import {CurrencyField} from '../../components/currency-field';
+import {CurrencyField2} from '../../components/currency-field-2';
 import {Configuration} from '../../configuration.service';
 import {NoFocusDirective} from '../../noFocus';
 import {Component} from '@angular/core';
@@ -12,7 +12,7 @@ import {Utils} from '../../utils';
 
 @Component({
   templateUrl: 'build/modals/add-edit-transaction/add-edit-transaction.html',
-  directives: [CurrencyField, NoFocusDirective]
+  directives: [CurrencyField2, NoFocusDirective]
 })
 export class AddEditTransactionModal {
 
