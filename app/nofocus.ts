@@ -8,8 +8,9 @@ import {Directive} from '@angular/core';
 })
 export class NoFocusDirective {
         
-    onMouseDown(event : any) {
+    onMouseDown(event: any) {
         event.preventDefault();
+        return false;
     }
 
 }

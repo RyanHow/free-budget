@@ -8,44 +8,44 @@ export class Db {
     
     private transactions: LokiCollection<Transaction>;
     public sortedTransactions: LokiDynamicView<Transaction>;
-    private active : boolean;
-    private initialised : boolean;
-    private activating : boolean;
-    private transactionIdHead : number;
-    private eventListeners : Array<any>;
-    transactionProcessor : TransactionProcessor;
+    private active: boolean;
+    private initialised: boolean;
+    private activating: boolean;
+    private transactionIdHead: number;
+    private eventListeners: Array<any>;
+    transactionProcessor: TransactionProcessor;
 
     toJSON() {
         return this.id;
     }
 
-    constructor(public id : string, private dbms : Dbms , private persistenceProvider : DbPersistenceProvider, private loki : Loki, private transactionSerializer : TransactionSerializer) {
+    constructor(public id: string, private dbms: Dbms , private persistenceProvider: DbPersistenceProvider, private loki: Loki, private transactionSerializer: TransactionSerializer) {
         this.active = false;
         this.initialised = false;
         this.transactionProcessor = new TransactionProcessor(this, this.loki);
         
-        this.transactions = this.loki.addCollection<Transaction>("transactions_" + this.id);
-        this.transactions.ensureUniqueIndex("id");
+        this.transactions = this.loki.addCollection<Transaction>('transactions_' + this.id);
+        this.transactions.ensureUniqueIndex('id');
         this.eventListeners = [];
     }
 
-    init() : Promise<void> {
+    init(): Promise<void> {
         return this.persistenceProvider.transactions(this.id).then(dbtransactions => {
             dbtransactions.forEach((transaction) => {
                 this.transactions.insert(transaction);
             });
-            this.sortedTransactions = this.transactions.addDynamicView("sortedTransactions_" + this.id);
+            this.sortedTransactions = this.transactions.addDynamicView('sortedTransactions_' + this.id);
             this.sortedTransactions.applySimpleSort('id');
             this.initialised = true;
         });
     }
     
-    isActive() : boolean {
+    isActive(): boolean {
         return this.active;
     }
     
     activate() {
-        if (!this.initialised) throw new Error("Activate called when not yet initialised.");
+        if (!this.initialised) throw new Error('Activate called when not yet initialised.');
         if (this.active) return;
         
         // Only if active... so do this on "activate" ?
@@ -57,7 +57,7 @@ export class Db {
 
         this.active = true;
         
-        this.fireEvent("activated", {db : this});
+        this.fireEvent('activated', {db: this});
 
     }
     
@@ -68,22 +68,22 @@ export class Db {
     deactivate() {
         if (! this.active) return;
         
-        //TODO: Delete tables (not transactions, but generated tables)
+        // TODO: Delete tables (not transactions, but generated tables)
         this.active = false;
     }
 
-    name(name? : string) : string {
-        return this.localSetting("name", name);
+    name(name?: string): string {
+        return this.localSetting('name', name);
     }
     
-    transactionIdLocalGen(localGenId? : any) : number {
-        var id = this.localSetting("localGenId", localGenId);
+    transactionIdLocalGen(localGenId?: any): number {
+        var id = this.localSetting('localGenId', localGenId);
         if (!id) return 1;
-        if (parseInt(id) < 1 || parseInt(id) > 999) throw new Error("localGenId must be between 1 - 999 inclusive. Value is: " + localGenId);
+        if (parseInt(id) < 1 || parseInt(id) > 999) throw new Error('localGenId must be between 1 - 999 inclusive. Value is: ' + localGenId);
         return parseInt(id);
     }
 
-    localSetting(key : string, valueString? : string) : string {
+    localSetting(key: string, valueString?: string): string {
         return this.persistenceProvider.keyStore(this.id, key, valueString);
     }
     
@@ -92,7 +92,7 @@ export class Db {
         return ~~((~~((this.transactionIdHead ? this.transactionIdHead : 0) / 1000) + 1) * 1000) + this.transactionIdLocalGen();
     }
 
-    private updateTransactionIdHead(transaction : Transaction) {
+    private updateTransactionIdHead(transaction: Transaction) {
         if (!this.transactionIdHead || transaction.id > this.transactionIdHead) this.transactionIdHead = transaction.id;
     }
     
@@ -101,7 +101,7 @@ export class Db {
      * 
      * The transaction must be a new one, or attached to a database, not a clone
      */
-    applyTransaction(transaction : Transaction) {
+    applyTransaction(transaction: Transaction) {
 
         if (transaction.id) this.updateTransactionIdHead(transaction);
         
@@ -134,11 +134,11 @@ export class Db {
             this.saveTransaction(transaction);
         }
         
-        this.fireEvent("transaction-applied", {'transaction' : transaction});
+        this.fireEvent('transaction-applied', {'transaction': transaction});
     }
     
-    getTransaction<T extends Transaction>(transactionId : number) : T {
-        return <T>this.transactions.by("id", <any> transactionId);
+    getTransaction<T extends Transaction>(transactionId: number): T {
+        return <T>this.transactions.by('id', <any> transactionId);
     }
     
     /**
@@ -148,7 +148,7 @@ export class Db {
      * 
      * The transaction must be a new one, or attached to a database, not a clone
      */
-    saveTransaction(transaction : Transaction) {
+    saveTransaction(transaction: Transaction) {
         // Determine which one... it doesn't matter
         if (this.getTransaction(transaction.id) == null) {
             this.transactions.insert(transaction);
@@ -162,7 +162,7 @@ export class Db {
     /**
      * Undo a transaction and remove it from the database
      */
-    deleteTransaction(transaction : Transaction) {
+    deleteTransaction(transaction: Transaction) {
         transaction.deleted = true;
         if (this.getTransaction(transaction.id) == null) {
             this.transactions.insert(transaction);
@@ -174,11 +174,11 @@ export class Db {
         this.undoTransaction(transaction);
     }
     
-    undoTransaction(transaction : Transaction) {
+    undoTransaction(transaction: Transaction) {
         if (!transaction.applied) return;
         transaction.undo(this.transactionProcessor);
         transaction.applied = false;
-        this.fireEvent("transaction-undone", {'transaction' : transaction});
+        this.fireEvent('transaction-undone', {'transaction': transaction});
     }
     
     
@@ -190,8 +190,8 @@ export class Db {
 
     fireEvent(eventName, data) {
         // TODO: Register dbs.service as a listener, and have it emit events, so replication can listen at a "global" level rather than to every db
-        JL("db").debug(eventName + " data: " + JSON.stringify(data));
-        this.eventListeners.forEach(function(l) {l(eventName, data);});
+        JL('db').debug(eventName + ' data: ' + JSON.stringify(data));
+        this.eventListeners.forEach(function(l) {l(eventName, data); });
     }
 
 

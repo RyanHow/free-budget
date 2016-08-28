@@ -6,15 +6,15 @@ import {TransactionSerializer} from './transactionSerializer.service';
 @Injectable()
 export class PersistenceProviderManager  {
 
-    private persistenceProvider : DbPersistenceProvider;
+    private persistenceProvider: DbPersistenceProvider;
  
-    constructor(private transactionSerializer : TransactionSerializer) {
+    constructor(private transactionSerializer: TransactionSerializer) {
         
     }
 
-    provide() : DbPersistenceProvider {
+    provide(): DbPersistenceProvider {
         if (this.persistenceProvider == null) {
-            this.persistenceProvider = new LocalStoragePersistenceProvider("A", this.transactionSerializer);
+            this.persistenceProvider = new LocalStoragePersistenceProvider('A', this.transactionSerializer);
         }
 
         return this.persistenceProvider;

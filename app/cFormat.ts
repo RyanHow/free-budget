@@ -11,10 +11,10 @@ export class CFormatPipe  {
         let formattedVal = pf.formatIt(val);
         
         if (parseFloat(val) < 0) {
-            formattedVal = "(" + formattedVal + ")";
+            formattedVal = '(' + formattedVal + ')';
         }
         
-        return "$" + formattedVal;
+        return '$' + formattedVal;
         
     }
 

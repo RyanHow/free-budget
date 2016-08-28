@@ -1,5 +1,5 @@
-import {IONIC_DIRECTIVES, Modal, ModalController, Menu, NavController, ViewController, Nav, App, Alert, AlertController} from 'ionic-angular';
-import {Component, Input, ViewChild} from '@angular/core';
+import {IONIC_DIRECTIVES, ModalController, Menu, Nav, App, AlertController} from 'ionic-angular';
+import {Component, Input} from '@angular/core';
 import {Dbms} from '../../db/dbms.service';
 import {Db} from '../../db/db';
 import {Configuration} from '../../configuration.service';
@@ -19,35 +19,35 @@ import {SettingsPage} from '../../pages/settings/settings';
 export class MainMenuContent {
   
   @Input()
-  menu : Menu;
+  menu: Menu;
   @Input()
-  nav : Nav;
-  budgets :Db[];
+  nav: Nav;
+  budgets: Db[];
 
-  constructor(private dbms : Dbms, private app : App, private configuration : Configuration, private modalController : ModalController, private alertController : AlertController) {
+  constructor(private dbms: Dbms, private app: App, private configuration: Configuration, private modalController: ModalController, private alertController: AlertController) {
     this.dbms = dbms;
     this.budgets = dbms.dbs;
     this.app = app;
   }
 
-  isBudgetPageOpen() : boolean {
+  isBudgetPageOpen(): boolean {
     return false;
   }
   
-  budgetName(budget : Db) : string {
-    return budget.name() || "New Budget (" + budget.id + ")";
+  budgetName(budget: Db): string {
+    return budget.name() || 'New Budget (' + budget.id + ')';
   }
   
-  openBudget(budget : Db) {
+  openBudget(budget: Db) {
 //    if (this.lastOpenedBudget() == budget && this.nav.root == BudgetPage) return;
     this.configuration.lastOpenedBudget(budget.id);
-    this.nav.setRoot(BudgetPage, {'budget' : budget});
+    this.nav.setRoot(BudgetPage, {'budget': budget});
   }
 
-  lastOpenedBudget() : Db {
+  lastOpenedBudget(): Db {
     let budgetId = this.configuration.lastOpenedBudget();
     if (!budgetId) return;
-    let budget = this.dbms.getDb(budgetId)
+    let budget = this.dbms.getDb(budgetId);
     return budget;
   }
   
@@ -67,15 +67,15 @@ export class MainMenuContent {
     let modal = this.modalController.create(AddBudgetModal);
 
     modal.onDidDismiss((data) => {
-      if (data && data.budgetName != "" ) {
-        let db = this.dbms.createDb().then(db => {
+      if (data && data.budgetName !== '') {
+        this.dbms.createDb().then(db => {
           db.activate();
           let t = new InitBudgetTransaction();
           t.budgetName = data.budgetName;
           db.applyTransaction(t);
           db.deactivate();
 
-          this.nav.setRoot(BudgetPage, {'budget' : db});
+          this.nav.setRoot(BudgetPage, {'budget': db});
         });
       }
     });
@@ -89,7 +89,7 @@ export class MainMenuContent {
     modal.data.budgetName = this.lastOpenedBudget().name();
 
     modal.onDidDismiss((data) => {
-      if (data && data.budgetName != "" && data.budgetName != this.lastOpenedBudget().name()) {
+      if (data && data.budgetName !== '' && data.budgetName !== this.lastOpenedBudget().name()) {
         let t = InitBudgetTransaction.getFrom(this.lastOpenedBudget());
         t.budgetName = data.budgetName;
         this.lastOpenedBudget().applyTransaction(t);

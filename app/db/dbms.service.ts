@@ -9,13 +9,13 @@ import {TransactionSerializer} from './transactionSerializer.service';
 @Injectable()
 export class Dbms {
     
-    private loki : Loki;
-    private persistenceProvider : DbPersistenceProvider;
-    public dbs : Array<Db>;
-    private dbMap : Map<string, Db>;
-    public initialising : boolean;
+    private loki: Loki;
+    private persistenceProvider: DbPersistenceProvider;
+    public dbs: Array<Db>;
+    private dbMap: Map<string, Db>;
+    public initialising: boolean;
         
-    constructor(private transactionSerializer : TransactionSerializer, persistenceProviderManager : PersistenceProviderManager) {
+    constructor(private transactionSerializer: TransactionSerializer, persistenceProviderManager: PersistenceProviderManager) {
         this.persistenceProvider = persistenceProviderManager.provide();
         this.loki = new Loki(null);
         this.loki.autosaveDisable();
@@ -24,7 +24,7 @@ export class Dbms {
 
     }
     
-    init() : Promise<void> {
+    init(): Promise<void> {
         this.initialising = true;
 
         let inits = new Array<Promise<any>>();
@@ -33,19 +33,19 @@ export class Dbms {
             inits.push(this.createDb(dbId));
         });
 
-        //this.fireEvent("initialised", true);
+        // this.fireEvent("initialised", true);
 
-        return Promise.all(inits).then(() => {this.initialising = false;});
+        return Promise.all(inits).then(() => { this.initialising = false; });
     }
     
     
-    getDb(id : string) : Db {
+    getDb(id: string): Db {
         return this.dbMap.get(id);
     }
     
-    createDb(id? : string) : Promise<Db> {
+    createDb(id?: string): Promise<Db> {
         
-        if (!id) id = UUID.UUID().split("-").join("");
+        if (!id) id = UUID.UUID().split('-').join('');
 
         let db = new Db(id, this, this.persistenceProvider, this.loki, this.transactionSerializer);
         
@@ -62,11 +62,11 @@ export class Dbms {
 
     }
 
-    deleteDb(id : string) {
+    deleteDb(id: string) {
         let db = this.getDb(id);
         this.dbs.splice(this.dbs.indexOf(db), 1);
         this.dbMap.delete(id);
-        db.fireEvent("deleted", {});
+        db.fireEvent('deleted', {});
         this.persistenceProvider.unlinkDb(id);
     }
 }

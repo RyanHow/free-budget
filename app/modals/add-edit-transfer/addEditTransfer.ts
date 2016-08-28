@@ -9,7 +9,7 @@ import {Component} from '@angular/core';
 import {Utils} from '../../utils';
 
 @Component({
-  templateUrl: "build/modals/add-edit-transfer/add-edit-transfer.html",
+  templateUrl: 'build/modals/add-edit-transfer/add-edit-transfer.html',
   directives: [CurrencyField]
 })
 export class AddEditTransferModal {
@@ -30,11 +30,11 @@ export class AddEditTransferModal {
 
     if (navParams.data.transactionId) {
       this.editing = true;
-      this.transactionRecord = this.budget.transactionProcessor.table(Transaction).by("id", navParams.data.transactionId);
+      this.transactionRecord = this.budget.transactionProcessor.table(Transaction).by('id', navParams.data.transactionId);
       this.transfer = InitCategoryTransferTransaction.getFrom(this.budget, this.transactionRecord);
       
       this.data.date = Utils.toIonicFromYYYYMMDD(this.transfer.date);
-      this.data.amount = this.transfer.amount + "";
+      this.data.amount = this.transfer.amount + '';
       this.data.description = this.transfer.description;
       this.data.categoryFrom = this.transfer.fromCategoryId;
       this.data.categoryTo = this.transfer.toCategoryId;
@@ -48,7 +48,7 @@ export class AddEditTransferModal {
     
   }
   
-  submit(event : Event) {
+  submit(event: Event) {
     event.preventDefault();
     
     this.transfer.amount = new Big(this.data.amount);

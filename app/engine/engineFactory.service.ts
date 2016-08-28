@@ -12,7 +12,7 @@ export class EngineFactory {
         
     }
     
-    getEngine(db : Db) : Engine {
+    getEngine(db: Db): Engine {
         if (!(<any> db).engine) {
             
             let engine = new Engine(db);

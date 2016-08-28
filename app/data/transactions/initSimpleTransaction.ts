@@ -6,16 +6,16 @@ import {Db} from '../../db/db';
 
 export class InitSimpleTransaction extends Transaction {
 
-    description : string;
-    date : string;
-    amount : BigJsLibrary.BigJS;
-    categoryId : number;
+    description: string;
+    date: string;
+    amount: BigJsLibrary.BigJS;
+    categoryId: number;
 
-    getTypeId() : string {
-        return "InitSimpleTransaction";
+    getTypeId(): string {
+        return 'InitSimpleTransaction';
     }
 
-    apply(tp : TransactionProcessor) {
+    apply(tp: TransactionProcessor) {
 
         // TODO: Validation
 
@@ -32,9 +32,9 @@ export class InitSimpleTransaction extends Transaction {
         table.insert(t);        
     }
 
-    update(tp :TransactionProcessor) {
+    update(tp: TransactionProcessor) {
         let table = tp.table(TransactionRecord);
-        let t = table.by("id", <any> this.id);
+        let t = table.by('id', <any> this.id);
         t.amount = this.amount;
         t.date = this.date;
         t.description = this.description;
@@ -42,18 +42,18 @@ export class InitSimpleTransaction extends Transaction {
         table.update(t);
     }
     
-    undo(tp :TransactionProcessor) {
+    undo(tp: TransactionProcessor) {
         let table = tp.table(TransactionRecord);
-        let c = table.by("id", <any> this.id);
+        let c = table.by('id', <any> this.id);
         table.remove(c);
     }
 
-    static getFrom(db : Db, transactionRecord : TransactionRecord) : InitSimpleTransaction {
+    static getFrom(db: Db, transactionRecord: TransactionRecord): InitSimpleTransaction {
         return db.getTransaction<InitSimpleTransaction>(transactionRecord.id);
     }
     
-    deserialize(field : string, value : any) : any {
-        if (field == "amount")
+    deserialize(field: string, value: any): any {
+        if (field === 'amount')
             return new Big(value);
         return value;
     }

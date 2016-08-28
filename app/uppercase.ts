@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 import {Directive, ElementRef, Input , Output, Optional,HostBinding, EventEmitter} from '@angular/core';
 import {NgModel, NgControl,Control} from '@angular/common';
 declare function jQuery(any?) : any;

@@ -10,6 +10,9 @@ import {NgModel} from '@angular/forms';
     }
 })
 export class PriceFormat {
+
+    /* tslint:disable */
+
     modelPreviousValue;
     element;
     input;

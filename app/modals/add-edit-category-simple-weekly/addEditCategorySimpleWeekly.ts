@@ -1,4 +1,4 @@
-import {Page, Modal, NavController, ViewController, NavParams, Alert} from 'ionic-angular';
+import {NavController, ViewController, NavParams} from 'ionic-angular';
 import {Db} from '../../db/db';
 import {Category} from '../../data/records/category';
 import {Transaction} from '../../data/records/transaction';
@@ -9,7 +9,7 @@ import {Component} from '@angular/core';
 import {Utils} from '../../utils';
 
 @Component({
-  templateUrl: "build/modals/add-edit-category-simple-weekly/add-edit-category-simple-weekly.html",
+  templateUrl: 'build/modals/add-edit-category-simple-weekly/add-edit-category-simple-weekly.html',
   directives: [CurrencyField]
 })
 export class AddEditCategorySimpleWeeklyModal {
@@ -21,12 +21,12 @@ export class AddEditCategorySimpleWeeklyModal {
   weeklyAmount: any;
   balanceDate: string;
   
-  constructor(public viewCtrl: ViewController, private navParams: NavParams, private dbms : Dbms, private nav : NavController) {
+  constructor(public viewCtrl: ViewController, private navParams: NavParams, private dbms: Dbms, private nav: NavController) {
     this.viewCtrl = viewCtrl;
     this.nav = nav;
     
     this.budget = dbms.getDb(navParams.data.budgetId);
-    this.category = this.budget.transactionProcessor.table(Category).by("id", navParams.data.categoryId);    
+    this.category = this.budget.transactionProcessor.table(Category).by('id', navParams.data.categoryId);    
     this.transaction = InitCategorySimpleWeeklyTransaction.getFrom(this.budget, this.category);
 
     this.balanceDate = Utils.nowIonic();

@@ -3,17 +3,17 @@ import {Transaction} from './transaction';
 
 @Injectable()
 export class TransactionSerializer {
-    private transactionTypeIdMap : Map<string,any> = new Map<string,any>();
+    private transactionTypeIdMap: Map<string, any> = new Map<string, any>();
 
-    registerType<T extends Transaction>(type : {new() : T}) {
+    registerType<T extends Transaction>(type: {new(): T}) {
         this.transactionTypeIdMap.set(new type().getTypeId(), type);
-        JL().debug("Registered Type " + type + " as " + new type().getTypeId());
+        JL().debug('Registered Type ' + type + ' as ' + new type().getTypeId());
     }
     
-    newTransaction<T>(typeId : string, jsonObject? : Object): T {
+    newTransaction<T>(typeId: string, jsonObject?: Object): T {
         var transactionType = this.transactionTypeIdMap.get(typeId);
         if (!transactionType) {
-            JL().fatal({"msg": "No transaction type available for " + typeId, "obj" : jsonObject});
+            JL().fatal({'msg': 'No transaction type available for ' + typeId, 'obj': jsonObject});
         }
         var t = new transactionType();
         if (jsonObject) {
@@ -24,7 +24,7 @@ export class TransactionSerializer {
         return t;
     }
     
-    cloneTransaction<T extends Transaction>(transaction : T) : T {
+    cloneTransaction<T extends Transaction>(transaction: T): T {
         let dataCopy = <any> JSON.parse(JSON.stringify(transaction)); // Deep copy this so we aren't accidentally copying any references
         delete dataCopy.$loki;
         delete dataCopy.meta;
@@ -34,11 +34,11 @@ export class TransactionSerializer {
         return this.newTransaction<T>(transaction.typeId, dataCopy);
     }
     
-    toJson(transaction : Transaction) : string {
+    toJson(transaction: Transaction): string {
         return JSON.stringify(transaction);
     }
     
-    fromJson<T extends Transaction>(jsonString : string) : T {
+    fromJson<T extends Transaction>(jsonString: string): T {
         var obj = JSON.parse(jsonString);
         return this.newTransaction<T>(obj.typeId, obj);
     }

@@ -19,7 +19,7 @@ import {InitCategorySimpleWeeklyTransaction} from './data/transactions/initCateg
 import {AddEditTransferModal} from './modals/add-edit-transfer/addEditTransfer';
 import {AddEditTransactionModal} from './modals/add-edit-transaction/addEditTransaction';
 
-JL().info("Reading App");
+JL().info('Reading App');
 
 @Component({
   templateUrl: 'build/app.html',
@@ -31,34 +31,34 @@ export class BudgetApp {
   @ViewChild(Nav) nav: Nav;
 
   constructor(platform: Platform, private configuration: Configuration, dbms: Dbms, persistenceProviderManager: PersistenceProviderManager, private transactionSerializer: TransactionSerializer, private editorProvider: EditorProvider) {
-    JL().info("Constructing App");
+    JL().info('Constructing App');
     
     platform.ready().then(() => {
-      JL().info("Platform Ready");
-      if (platform.is("cordova")) {
-        JL().info("Running cordova");
+      JL().info('Platform Ready');
+      if (platform.is('cordova')) {
+        JL().info('Running cordova');
         configuration.native = true;
-        JL().info("Device Info");
+        JL().info('Device Info');
         JL().info(Device.device);
       }
-      if (!platform.is("cordova")) {
-        JL().info("Running web browser");
+      if (!platform.is('cordova')) {
+        JL().info('Running web browser');
         configuration.native = false;
       } 
 
-      JL().info("Initialising Persistence Provider");
+      JL().info('Initialising Persistence Provider');
       persistenceProviderManager.provide().init().then(() => {
-        JL().info("Initialising Persistence Provider");
-        JL().info("Loading Configuration");
+        JL().info('Initialising Persistence Provider');
+        JL().info('Loading Configuration');
         return configuration.configure();
       }).then(() => {
         this.registerTransactions();
         this.registerEditorProviders();
-        JL().info("Loading Configuration Done");
-        JL().info("Initialising Dbms");
+        JL().info('Loading Configuration Done');
+        JL().info('Initialising Dbms');
         return dbms.init();
       }).then(() => {
-        JL().info("Initialising Dbms Done");
+        JL().info('Initialising Dbms Done');
         
         // Okay, so the platform is ready and our plugins are available.
         // Here you can do any higher level native things you might need.
@@ -70,7 +70,7 @@ export class BudgetApp {
               let budget = dbms.getDb(configuration.lastOpenedBudget());
               this.nav.setRoot(BudgetPage, {'budget' : budget});
             } catch (e) {
-              JL().error({msg: "Unable to auto open budget", exception: e});            
+              JL().error({msg: 'Unable to auto open budget', exception: e});            
               this.nav.setRoot(HomePage);
             }
           } else {
@@ -78,7 +78,7 @@ export class BudgetApp {
           }
 
         }).catch(err => {
-          JL().fatalException("Error in initialisation", err);
+          JL().fatalException('Error in initialisation', err);
         });
 
 
@@ -104,12 +104,12 @@ export class BudgetApp {
 
 class TransactionModalProvider extends ModalProvider {
     
-    constructor(private transactionType : string, private modalClass : any) {
+    constructor(private transactionType: string, private modalClass: any) {
         super();
     }
         
-    provide(params :any) : any {
-        if (params.transaction && params.transaction.config && params.transaction.config.transactionType == this.transactionType) return this.modalClass;
+    provide(params: any): any {
+        if (params.transaction && params.transaction.config && params.transaction.config.transactionType === this.transactionType) return this.modalClass;
     }
 }
 

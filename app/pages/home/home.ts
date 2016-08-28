@@ -1,4 +1,4 @@
-import {Page, Modal, ModalController, NavController} from 'ionic-angular';
+import {Page, ModalController, NavController} from 'ionic-angular';
 import {AddBudgetModal} from '../../modals/add-budget/addBudget';
 import {BudgetPage} from '../../pages/budget/budget';
 import {Dbms} from '../../db/dbms.service';
@@ -8,9 +8,9 @@ import {InitBudgetTransaction} from '../../data/transactions/initBudgetTransacti
   templateUrl: 'build/pages/home/home.html'
 })
 export class HomePage {
-  projectMenuEnabled : boolean;
+  projectMenuEnabled: boolean;
   
-  constructor(private nav: NavController, private dbms : Dbms, private modalController : ModalController){
+  constructor(private nav: NavController, private dbms: Dbms, private modalController: ModalController) {
     this.nav = nav;
     this.projectMenuEnabled = true;
     this.dbms = dbms;
@@ -20,8 +20,8 @@ export class HomePage {
     let modal = this.modalController.create(AddBudgetModal);
 
     modal.onDidDismiss((data) => {
-      if (data && data.budgetName != "" ) {
-        let db = this.dbms.createDb().then(db => {
+      if (data && data.budgetName !== '') {
+        this.dbms.createDb().then(db => {
           db.activate();
           let t = new InitBudgetTransaction();
           t.budgetName = data.budgetName;

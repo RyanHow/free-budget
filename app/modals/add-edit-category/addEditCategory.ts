@@ -1,4 +1,4 @@
-import {Page, Modal, NavController, ViewController, NavParams, Alert, AlertController} from 'ionic-angular';
+import {NavController, ViewController, NavParams, AlertController} from 'ionic-angular';
 import {Db} from '../../db/db';
 import {Category} from '../../data/records/category';
 import {Dbms} from '../../db/dbms.service';
@@ -6,7 +6,7 @@ import {InitCategoryTransaction} from '../../data/transactions/initCategoryTrans
 import {Component} from '@angular/core';
 
 @Component({
-  templateUrl: "build/modals/add-edit-category/add-edit-category.html"
+  templateUrl: 'build/modals/add-edit-category/add-edit-category.html'
 })
 export class AddEditCategoryModal {
   budget: Db;
@@ -14,7 +14,7 @@ export class AddEditCategoryModal {
   category: Category;
   categoryName: string;
   
-  constructor(public viewCtrl: ViewController, private navParams: NavParams, private dbms : Dbms, private nav : NavController, private alertController : AlertController) {
+  constructor(public viewCtrl: ViewController, private navParams: NavParams, private dbms: Dbms, private nav: NavController, private alertController: AlertController) {
     this.viewCtrl = viewCtrl;
     this.nav = nav;
     
@@ -22,7 +22,7 @@ export class AddEditCategoryModal {
     
     if (navParams.data.categoryId) {
       this.editing = true;
-      this.category = this.budget.transactionProcessor.table(Category).by("id", navParams.data.categoryId);
+      this.category = this.budget.transactionProcessor.table(Category).by('id', navParams.data.categoryId);
       this.categoryName = this.category.name;
     } else {
       this.editing = false;

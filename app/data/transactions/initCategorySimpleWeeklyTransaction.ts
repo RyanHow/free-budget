@@ -7,24 +7,24 @@ import {CategorySimpleWeeklyProcessor} from '../processors/categorySimpleWeeklyP
 
 export class InitCategorySimpleWeeklyTransaction extends Transaction {
 
-    categoryId : number;
-    balanceDate : string;
-    balance : BigJsLibrary.BigJS;
-    weeklyAmount : BigJsLibrary.BigJS;
+    categoryId: number;
+    balanceDate: string;
+    balance: BigJsLibrary.BigJS;
+    weeklyAmount: BigJsLibrary.BigJS;
 
-    getTypeId() : string {
-        return "InitCategorySimpleWeeklyTransaction";
+    getTypeId(): string {
+        return 'InitCategorySimpleWeeklyTransaction';
     }
 
 
-    apply(tp : TransactionProcessor) {
+    apply(tp: TransactionProcessor) {
         
         // TODO: Validation
         
         let table = tp.table(Category);
-        let categoryRecord = table.by("id", <any> this.categoryId);
+        let categoryRecord = table.by('id', <any> this.categoryId);
         if (categoryRecord == null) {
-            JL().warn("Trying to processing category weekly transaction with invalid category. Skipping.");
+            JL().warn('Trying to processing category weekly transaction with invalid category. Skipping.');
             return;
         }
         let processor = new CategorySimpleWeeklyProcessor();
@@ -41,23 +41,23 @@ export class InitCategorySimpleWeeklyTransaction extends Transaction {
         // TODO: engine.execute ?? - needs to be called from elsewhere so it can be batched... but maybe have to fire an event here ?
     }
 
-    update(tp :TransactionProcessor) {
+    update(tp: TransactionProcessor) {
         this.undo(tp);
         this.apply(tp);        
     }
     
-    undo(tp :TransactionProcessor) {
+    undo(tp: TransactionProcessor) {
         let table = tp.table(Category);
-        let categoryRecord = table.by("id", <any> this.categoryId);
+        let categoryRecord = table.by('id', <any> this.categoryId);
 
         if (categoryRecord == null) {
-            JL().warn("Trying to processing category weekly transaction with invalid category. Skipping.");
+            JL().warn('Trying to processing category weekly transaction with invalid category. Skipping.');
             return;
         }
 
         // TODO: A better method of finding, or some centralised methods in engine rather than using the processors array directly...
         let categorySimpleWeeklyProcessor = categoryRecord.engine.processors.find(processor => {
-            return processor.getTypeId() == "CategorySimpleWeeklyProcessor" && (<CategorySimpleWeeklyProcessor> processor).transactionId == this.id;
+            return processor.getTypeId() === 'CategorySimpleWeeklyProcessor' && (<CategorySimpleWeeklyProcessor> processor).transactionId === this.id;
         });
         
         categoryRecord.engine.processors.splice(categoryRecord.engine.processors.indexOf(categorySimpleWeeklyProcessor), 1);
@@ -65,19 +65,19 @@ export class InitCategorySimpleWeeklyTransaction extends Transaction {
         table.update(categoryRecord);
     }
 
-    static getFrom(db : Db, category : Category) : InitCategorySimpleWeeklyTransaction {
+    static getFrom(db: Db, category: Category): InitCategorySimpleWeeklyTransaction {
         let categorySimpleWeeklyProcessor = <CategorySimpleWeeklyProcessor>category.engine.processors.find(processor => {
-            return processor.getTypeId() == "CategorySimpleWeeklyProcessor";
+            return processor.getTypeId() === 'CategorySimpleWeeklyProcessor';
         });
 
         if (!categorySimpleWeeklyProcessor) return;
         return db.getTransaction<InitCategorySimpleWeeklyTransaction>((categorySimpleWeeklyProcessor).transactionId);
     }
     
-    deserialize(field : string, value : any) : any {
-        if (field == "balance")
+    deserialize(field: string, value: any): any {
+        if (field === 'balance')
             return new Big(value);
-        if (field == "weeklyAmount")
+        if (field === 'weeklyAmount')
             return new Big(value);
         return value;
     }

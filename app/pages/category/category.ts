@@ -1,4 +1,4 @@
-import {Page, Modal, NavController, NavParams, Refresher, Popover, ViewController, ModalController, PopoverController} from 'ionic-angular';
+import {Page, NavController, NavParams, ViewController, ModalController, PopoverController} from 'ionic-angular';
 import {Component} from '@angular/core';
 import {Dbms} from '../../db/dbms.service';
 import {Db} from '../../db/db';
@@ -20,23 +20,23 @@ import {CurrencyDisplay} from '../../currencyDisplay';
   pipes: [DFormatPipe]
 })
 export class CategoryPage {
-  budget : Db;
-  budgetRecord : Budget;
-  category : Category;
+  budget: Db;
+  budgetRecord: Budget;
+  category: Category;
   transactions: LokiDynamicView<Transaction>;
   transactionTable: LokiCollection<Transaction>;
   
-  constructor(private nav: NavController, private dbms : Dbms, private params : NavParams, private editorProvider : EditorProvider, private modalController : ModalController, private popoverController : PopoverController){
+  constructor(private nav: NavController, private dbms: Dbms, private params: NavParams, private editorProvider: EditorProvider, private modalController: ModalController, private popoverController: PopoverController) {
     this.nav = nav;
     this.dbms = dbms;
     
     this.budget = params.data.budget;
     let categoryTable = this.budget.transactionProcessor.table(Category);
-    this.category = categoryTable.by("id", params.data.categoryId);
+    this.category = categoryTable.by('id', params.data.categoryId);
     this.budgetRecord = this.budget.transactionProcessor.single(Budget);
     this.transactionTable = this.budget.transactionProcessor.table(Transaction);
 
-    this.transactions = <any> {data : function() {return []}};
+    this.transactions = <any> {data : function() {return []; }};
   }
   
   showMore(event) {
@@ -64,8 +64,8 @@ export class CategoryPage {
 
   }
 
-  categoryWeeklyAmount() : any {
-    //TODO Very inefficient way to get a value in angular
+  categoryWeeklyAmount(): any {
+    // TODO Very inefficient way to get a value in angular
     let t = InitCategorySimpleWeeklyTransaction.getFrom(this.budget, this.category);
     if (t) return t.weeklyAmount;
   }
@@ -85,9 +85,9 @@ export class CategoryPage {
     modal.present();
   }
   
-  editTransaction(transaction : Transaction) {
+  editTransaction(transaction: Transaction) {
     
-    let modal = this.editorProvider.getModal({"budget" : this.budget, "category" : this.category, "transaction" : transaction});
+    let modal = this.editorProvider.getModal({'budget' : this.budget, 'category' : this.category, 'transaction' : transaction});
     modal.data.budgetId = this.budget.id;
     modal.data.categoryId = this.category.id;
     modal.data.transactionId = transaction.id;
@@ -95,18 +95,17 @@ export class CategoryPage {
   }
 
   ionViewWillEnter() {
-    this.transactions = this.transactionTable.addDynamicView("categoryTransactions_" + this.category.id)
-    .applyFind({"categoryId" : this.category.id})
-    //.applySimpleSort("date", true)
-    .applySortCriteria([["date", true], ["id", true]]);
+    this.transactions = this.transactionTable.addDynamicView('categoryTransactions_' + this.category.id)
+    .applyFind({'categoryId' : this.category.id})
+    .applySortCriteria([['date', true], ['id', true]]);
 
-    JL().debug("WIll Enter Dynamic Views " + this.transactionTable.DynamicViews.length);
+    JL().debug('WIll Enter Dynamic Views ' + this.transactionTable.DynamicViews.length);
 
   }
   ionViewDidLeave() {
     this.transactionTable.removeDynamicView(this.transactions.name);
-    JL().debug("Did Leave Dynamic Views " + this.transactionTable.DynamicViews.length);
-    this.transactions = <any> {data : function() {return []}};
+    JL().debug('Did Leave Dynamic Views ' + this.transactionTable.DynamicViews.length);
+    this.transactions = <any> {data : function() {return []; }};
 
   }
 
@@ -126,7 +125,7 @@ export class CategoryPage {
 })
 class CategoryPopover {
 
-  private categoryPage : CategoryPage;
+  private categoryPage: CategoryPage;
 
   constructor(private viewCtrl: ViewController) {
     this.categoryPage = <CategoryPage>viewCtrl.data.categoryPage;

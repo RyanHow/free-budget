@@ -6,13 +6,13 @@ import {Db} from '../../db/db';
 
 export class InitBudgetTransaction extends Transaction {
 
-    budgetName : string;    
+    budgetName: string;    
 
-    getTypeId() : string {
-        return "InitBudgetTransaction";
+    getTypeId(): string {
+        return 'InitBudgetTransaction';
     }
 
-    apply(tp : TransactionProcessor) {
+    apply(tp: TransactionProcessor) {
 
         // TODO: Validation
 
@@ -22,20 +22,20 @@ export class InitBudgetTransaction extends Transaction {
         tp.db.name(this.budgetName);
     }
 
-    update(tp :TransactionProcessor) {
+    update(tp: TransactionProcessor) {
         this.apply(tp);
     }
     
-    undo(tp :TransactionProcessor) {
+    undo(tp: TransactionProcessor) {
         tp.unsupported();
     }
 
-    static getFrom(db : Db) : InitBudgetTransaction {
+    static getFrom(db: Db): InitBudgetTransaction {
         return db.getTransaction<InitBudgetTransaction>(1001);
     }
 
 
-    deserialize(field : string, value : any) : any {
+    deserialize(field: string, value: any): any {
         return value;
     }
 

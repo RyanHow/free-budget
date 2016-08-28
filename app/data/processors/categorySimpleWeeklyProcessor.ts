@@ -6,22 +6,22 @@ import {Transaction} from '../records/transaction';
 
 export class CategorySimpleWeeklyProcessor extends Processor {
     
-    category : Category;
-    balanceDate : string;
-    weeklyAmount : BigJsLibrary.BigJS;
-    balance : BigJsLibrary.BigJS;
-    transactionId : number;
+    category: Category;
+    balanceDate: string;
+    weeklyAmount: BigJsLibrary.BigJS;
+    balance: BigJsLibrary.BigJS;
+    transactionId: number;
     
-    getTypeId() : String {
-        return "CategorySimpleWeeklyProcessor";
+    getTypeId(): String {
+        return 'CategorySimpleWeeklyProcessor';
     }
         
-    execute(tp : TransactionProcessor) {
+    execute(tp: TransactionProcessor) {
         
-        var transactions = <Array<Transaction>> <any> tp.table(Transaction).find({'categoryId' : this.category.id});
+        var transactions = <Array<Transaction>> <any> tp.table(Transaction).find({'categoryId': this.category.id});
         var weekDiff, startBalance;
         try {
-            weekDiff = moment(this.balanceDate, "YYYYMMDD").startOf('week').diff(moment(), 'week');
+            weekDiff = moment(this.balanceDate, 'YYYYMMDD').startOf('week').diff(moment(), 'week');
             startBalance = new Big(weekDiff).abs().times(this.weeklyAmount).plus(this.balance);
         } catch (e) {
             throw e;
@@ -34,6 +34,6 @@ export class CategorySimpleWeeklyProcessor extends Processor {
         tp.table(Category).update(this.category);
     }
     
-    //TODO: Trigger when this occurs - transactions changed or the category record changed
+    // TODO: Trigger when this occurs - transactions changed or the category record changed
     
 }

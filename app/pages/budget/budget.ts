@@ -1,4 +1,4 @@
-import {Page, Modal, NavController, NavParams, Refresher, ModalController} from 'ionic-angular';
+import {Page, NavController, NavParams, ModalController} from 'ionic-angular';
 import {Dbms} from '../../db/dbms.service';
 import {Db} from '../../db/db';
 import {Category} from '../../data/records/category';
@@ -14,11 +14,11 @@ import {InitCategorySimpleWeeklyTransaction} from '../../data/transactions/initC
   directives: [CurrencyDisplay]
 })
 export class BudgetPage {
-  budget : Db;
-  budgetRecord : Budget;
-  categories : Category[]
+  budget: Db;
+  budgetRecord: Budget;
+  categories: Category[];
   
-  constructor(private nav: NavController, private dbms : Dbms, private params : NavParams, private engineFactory : EngineFactory, private modalController : ModalController){
+  constructor(private nav: NavController, private dbms: Dbms, private params: NavParams, private engineFactory: EngineFactory, private modalController: ModalController) {
     this.nav = nav;
     this.dbms = dbms;
     
@@ -38,12 +38,12 @@ export class BudgetPage {
 
   }
   
-  openCategory(category : Category) {
-    this.nav.push(CategoryPage, {"budget" : this.budget, "categoryId" : category.id});
+  openCategory(category: Category) {
+    this.nav.push(CategoryPage, {'budget': this.budget, 'categoryId': category.id});
   }
   
-  categoryWeeklyAmount(category : Category) : any {
-    //TODO Very inefficient way to get a value in angular
+  categoryWeeklyAmount(category: Category): any {
+    // TODO Very inefficient way to get a value in angular
     let t = InitCategorySimpleWeeklyTransaction.getFrom(this.budget, category);
     if (t) return t.weeklyAmount;
   }

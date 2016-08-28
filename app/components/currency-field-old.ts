@@ -12,10 +12,12 @@ import {Configuration} from '../configuration.service';
         '(input)': 'onInput($event)',
         '(focus)': 'onFocus($event)',
         '(click)': 'onClick($event)'
-        //'[type]': 'hostType'
+        // '[type]': 'hostType'
     }
 })
 export class CurrencyFieldOld extends PriceFormat {
+
+    /* tslint:disable */
 
     private usePriceFormat : boolean;
 
