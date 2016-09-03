@@ -10,7 +10,6 @@ import {EditorProvider, ModalProvider} from './editorProvider.service';
 import {Configuration} from './configuration.service';
 import {TransactionSerializer} from './db/transactionSerializer.service';
 import {EngineFactory} from './engine/engineFactory.service';
-import {Device} from 'ionic-native';
 import {InitBudgetTransaction} from './data/transactions/initBudgetTransaction';
 import {InitCategoryTransaction} from './data/transactions/initCategoryTransaction';
 import {InitSimpleTransaction} from './data/transactions/initSimpleTransaction';
@@ -35,17 +34,6 @@ export class BudgetApp {
     
     platform.ready().then(() => {
       JL().info('Platform Ready');
-      if (platform.is('cordova')) {
-        JL().info('Running cordova');
-        configuration.native = true;
-        JL().info('Device Info');
-        JL().info(Device.device);
-      }
-      if (!platform.is('cordova')) {
-        JL().info('Running web browser');
-        configuration.native = false;
-      } 
-
       JL().info('Initialising Persistence Provider');
       persistenceProviderManager.provide().init().then(() => {
         JL().info('Initialising Persistence Provider');

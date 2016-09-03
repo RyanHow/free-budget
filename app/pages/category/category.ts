@@ -11,6 +11,7 @@ import {InitCategorySimpleWeeklyTransaction} from '../../data/transactions/initC
 import {EditorProvider} from '../../editorProvider.service';
 import {AddEditTransactionModal} from '../../modals/add-edit-transaction/addEditTransaction';
 import {AddEditTransferModal} from '../../modals/add-edit-transfer/addEditTransfer';
+import {InitCategoryTransferTransaction} from '../../data/transactions/initCategoryTransferTransaction';
 import {DFormatPipe} from '../../dFormat';
 import {CurrencyDisplay} from '../../currencyDisplay';
 
@@ -37,6 +38,13 @@ export class CategoryPage {
     this.transactionTable = this.budget.transactionProcessor.table(Transaction);
 
     this.transactions = <any> {data : function() {return []; }};
+  }
+
+  transferOtherCategoryName(t: Transaction): string {
+    // TODO inefficient? store information in an easy to get way in the transaction config section. or call it x? - performance over memory...
+    let transfer = InitCategoryTransferTransaction.getFrom(this.budget, t);
+    let categoryId = transfer.fromCategoryId === this.category.id ? transfer.toCategoryId : transfer.fromCategoryId;
+    return this.budget.transactionProcessor.table(Category).by('id', categoryId.toString()).name;
   }
   
   showMore(event) {

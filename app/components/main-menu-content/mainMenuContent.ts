@@ -39,8 +39,6 @@ export class MainMenuContent {
   }
   
   openBudget(budget: Db) {
-//    if (this.lastOpenedBudget() == budget && this.nav.root == BudgetPage) return;
-    this.configuration.lastOpenedBudget(budget.id);
     this.nav.setRoot(BudgetPage, {'budget': budget});
   }
 

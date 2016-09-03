@@ -7,6 +7,7 @@ import {Budget} from '../../data/records/budget';
 import {AddEditCategoryModal} from '../../modals/add-edit-category/addEditCategory';
 import {EngineFactory} from '../../engine/engineFactory.service';
 import {CurrencyDisplay} from '../../currencyDisplay';
+import {Configuration} from '../../configuration.service';
 import {InitCategorySimpleWeeklyTransaction} from '../../data/transactions/initCategorySimpleWeeklyTransaction';
 
 @Page({
@@ -18,7 +19,7 @@ export class BudgetPage {
   budgetRecord: Budget;
   categories: Category[];
   
-  constructor(private nav: NavController, private dbms: Dbms, private params: NavParams, private engineFactory: EngineFactory, private modalController: ModalController) {
+  constructor(private nav: NavController, private dbms: Dbms, private params: NavParams, private engineFactory: EngineFactory, private modalController: ModalController, private configuration: Configuration) {
     this.nav = nav;
     this.dbms = dbms;
     
@@ -48,6 +49,9 @@ export class BudgetPage {
     if (t) return t.weeklyAmount;
   }
 
+  ionViewDidEnter() {
+    this.configuration.lastOpenedBudget(this.budget.id);
+  }
   
   ionViewDidUnload() {
     // TODO: CHeck this is called appropriately (ie. on a different setRoot(), but not on navigating to a child page)

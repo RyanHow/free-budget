@@ -9,5 +9,5 @@ export interface DbPersistenceProvider  {
     transactions(dbId): Promise<Array<Transaction>>;
     saveTransaction(dbId: string, transaction: Transaction);
     deleteTransaction(dbId: string, transactionId: number);
-    keyStore(dbId: string, key: string, value: string): string;
+    keyStore(dbId: string, key: string, value?: string): string;
 }

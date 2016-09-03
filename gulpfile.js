@@ -3,6 +3,7 @@ var gulp = require('gulp'),
     del = require('del'),
     runSequence = require('run-sequence'),
     concat = require('gulp-concat'),
+    git = require('gulp-git'),
     argv = process.argv;
 
 
@@ -90,4 +91,37 @@ gulp.task('jslibs', function() {
 gulp.task('logging.config', function() {
   gulp.src(['app/logging.config.js'])
     .pipe(gulp.dest('www/build/js/'))
+});
+
+var webDeployProjectPath = "../free-budget-web-dist-gh-pages";
+
+gulp.task('copy-web', function() {
+  del.sync([
+      webDeployProjectPath + '/**',
+      '!' + webDeployProjectPath,
+      '!' + webDeployProjectPath + '/CNAME',
+      '!' + webDeployProjectPath + '/.git/**'
+    ], {force:true});
+
+  return gulp.src([ 'www/**'])
+  .pipe(gulp.dest(webDeployProjectPath));
+});
+
+gulp.task('add-web', function() {
+  return gulp.src([])
+  .pipe(git.add({args: ".", cwd: webDeployProjectPath}));
+});
+
+gulp.task('commit-web', function() {
+  return gulp.src([])
+  .pipe(git.commit('Deploy Update', {args: '-a --allow-empty', cwd: webDeployProjectPath}));
+});
+
+
+gulp.task('push-web', function(done) {
+    return git.push('origin', 'gh-pages', {cwd: webDeployProjectPath}, done);
+});
+
+gulp.task('deploy-web', function(cb) {
+  runSequence('build', 'copy-web', 'add-web', 'commit-web', 'push-web', cb);
 });

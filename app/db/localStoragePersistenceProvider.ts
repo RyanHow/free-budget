@@ -67,7 +67,7 @@ export class LocalStoragePersistenceProvider implements DbPersistenceProvider {
     }
 
     
-    keyStore(dbId: string, key: string, value: string): string {
+    keyStore(dbId: string, key: string, value?: string): string {
         var localKey = this.storagePrefix + '_keystore_' + dbId + '_' + key;
         if (typeof value !== 'undefined' )
             localStorage.setItem(localKey, value);
