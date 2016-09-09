@@ -1,5 +1,5 @@
 import {Platform, Nav, ionicBootstrap} from 'ionic-angular';
-import {ViewChild, Component} from '@angular/core';
+import {ViewChild, Component, ExceptionHandler} from '@angular/core';
 import {StatusBar} from 'ionic-native';
 import {HomePage} from './pages/home/home';
 import {BudgetPage} from './pages/budget/budget';
@@ -101,8 +101,22 @@ class TransactionModalProvider extends ModalProvider {
     }
 }
 
+class AppExceptionHandler extends ExceptionHandler {
+    call(exception: any, stackTrace?: any, reason?: string): void {
+        JL().fatalException('Uncaught Exception (A): ', exception);
+    }
+}
+
+window.onerror = function(msg, url, line, col, error) {
+   var extra = !col ? '' : '\ncolumn: ' + col;
+   JL().fatalException('Uncaught Exception (B): ' + msg + '\nurl: ' + url + '\nline: ' + line + extra, error);
+
+   return true;
+};
+
 
 ionicBootstrap(BudgetApp, [
+  {provide: ExceptionHandler, useClass: AppExceptionHandler},
   Dbms,
   EditorProvider,
   Configuration,

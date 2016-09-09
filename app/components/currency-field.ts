@@ -21,7 +21,7 @@ export class CurrencyField {
         }
     }
     ngAfterViewInit(): void {
-        if (!(this.platform.is('ios') || this.platform.is('android'))) {
+        if (this.maskedInput) {
             this.maskedInput.ngAfterViewInit();
         }
         if (this.platform.is('ios') || this.platform.is('android')) {
@@ -33,7 +33,7 @@ export class CurrencyField {
 
     }
     onInput(): void {
-        this.maskedInput.onInput();
+        if (this.maskedInput) this.maskedInput.onInput();
     }
 
 
