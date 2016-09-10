@@ -32,7 +32,6 @@ export class CurrencyDisplay {
   }
   
   ngOnChanges() {
-    // JL().debug("Changes");
     this.formatCurrency();
   }
   

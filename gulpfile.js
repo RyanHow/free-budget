@@ -79,10 +79,7 @@ gulp.task('clean', function(){
 gulp.task('jslibs', function() {
 // Looks like these are inlcuded in app bundle ?
   gulp.src([
-    'node_modules/big.js/big.min.js',
-    'node_modules/jsnlog/jsnlog.min.js'
-    //'node_modules/jquery/dist/jquery.min.js',
-    //'libs/jquery.price-format.min.js'
+    'node_modules/big.js/big.min.js'
    ])
     .pipe(concat('jslibs.bundle.js'))
     .pipe(gulp.dest('www/build/js/'))

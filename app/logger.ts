@@ -21,26 +21,29 @@ export class Logger {
     }
 
     get config(): LoggerConfig {
-        return this.config;
+        return this._config;
     }
 
-    debug(data: any) {
+    debug(...data: any[]) {
         this.log(Logger.DEBUG, data);
     }
 
-    info (data: any) {
+    info (...data: any[]) {
         this.log(Logger.INFO, data);
     }
 
-    error (data: any) {
+    error (...data: any[]) {
         this.log(Logger.ERROR, data);
     }
 
-    private log (level: number, data: any) {
+    private log (level: number, ...data: any[]) {
+
+        if (this.config.level > level) return;
+
         // TODO: Can probably separate appenders into another class if ever need different config for different loggers
 
         if (level === Logger.DEBUG) {
-            console.debug(data);
+            console.info(data);
         } else if (level === Logger.INFO) {
             console.info(data);
         } else if (level === Logger.ERROR) {

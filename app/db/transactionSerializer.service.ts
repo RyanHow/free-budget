@@ -1,19 +1,23 @@
 import {Injectable} from '@angular/core';
 import {Transaction} from './transaction';
+import {Logger} from '../logger';
 
 @Injectable()
 export class TransactionSerializer {
+ 
+    private logger: Logger = Logger.get('TransactionSerializer');
+
     private transactionTypeIdMap: Map<string, any> = new Map<string, any>();
 
     registerType<T extends Transaction>(type: {new(): T}) {
         this.transactionTypeIdMap.set(new type().getTypeId(), type);
-        JL().debug('Registered Type ' + type + ' as ' + new type().getTypeId());
+        this.logger.info('Registered Transaction Type ' + type + ' as ' + new type().getTypeId());
     }
     
     newTransaction<T>(typeId: string, jsonObject?: Object): T {
         var transactionType = this.transactionTypeIdMap.get(typeId);
         if (!transactionType) {
-            JL().fatal({'msg': 'No transaction type available for ' + typeId, 'obj': jsonObject});
+            this.logger.error({'msg': 'No transaction type available for ' + typeId, 'obj': jsonObject});
         }
         var t = new transactionType();
         if (jsonObject) {

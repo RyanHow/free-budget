@@ -17,36 +17,36 @@ import {InitCategoryTransferTransaction} from './data/transactions/initCategoryT
 import {InitCategorySimpleWeeklyTransaction} from './data/transactions/initCategorySimpleWeeklyTransaction';
 import {AddEditTransferModal} from './modals/add-edit-transfer/addEditTransfer';
 import {AddEditTransactionModal} from './modals/add-edit-transaction/addEditTransaction';
-
-JL().info('Reading App');
+import {Logger} from './logger';
 
 @Component({
   templateUrl: 'build/app.html',
   directives: [MainMenuContent]
 })
 export class BudgetApp {
+
+  private logger: Logger = Logger.get('App');
   rootPage: any; // = HomePage;
   ready: boolean;
   @ViewChild(Nav) nav: Nav;
 
   constructor(platform: Platform, private configuration: Configuration, dbms: Dbms, persistenceProviderManager: PersistenceProviderManager, private transactionSerializer: TransactionSerializer, private editorProvider: EditorProvider) {
-    JL().info('Constructing App');
-    
+    this.logger.info('Constructing App');
     platform.ready().then(() => {
-      JL().info('Platform Ready');
-      JL().info('Initialising Persistence Provider');
+      this.logger.info('Platform Ready');
+      this.logger.info('Initialising Persistence Provider');
       persistenceProviderManager.provide().init().then(() => {
-        JL().info('Initialising Persistence Provider');
-        JL().info('Loading Configuration');
+        this.logger.info('Initialising Persistence Provider');
+        this.logger.info('Loading Configuration');
         return configuration.configure();
       }).then(() => {
         this.registerTransactions();
         this.registerEditorProviders();
-        JL().info('Loading Configuration Done');
-        JL().info('Initialising Dbms');
+        this.logger.info('Loading Configuration Done');
+        this.logger.info('Initialising Dbms');
         return dbms.init();
       }).then(() => {
-        JL().info('Initialising Dbms Done');
+        this.logger.info('Initialising Dbms Done');
         
         // Okay, so the platform is ready and our plugins are available.
         // Here you can do any higher level native things you might need.
@@ -58,7 +58,7 @@ export class BudgetApp {
               let budget = dbms.getDb(configuration.lastOpenedBudget());
               this.nav.setRoot(BudgetPage, {'budget' : budget});
             } catch (e) {
-              JL().error({msg: 'Unable to auto open budget', exception: e});            
+              this.logger.error({msg: 'Unable to auto open budget', exception: e});            
               this.nav.setRoot(HomePage);
             }
           } else {
@@ -66,7 +66,7 @@ export class BudgetApp {
           }
 
         }).catch(err => {
-          JL().fatalException('Error in initialisation', err);
+          this.logger.error('Error in initialisation', err);
         });
 
 
@@ -103,13 +103,13 @@ class TransactionModalProvider extends ModalProvider {
 
 class AppExceptionHandler extends ExceptionHandler {
     call(exception: any, stackTrace?: any, reason?: string): void {
-        JL().fatalException('Uncaught Exception (A): ', exception);
+        Logger.get('exception').error(exception);
     }
 }
 
 window.onerror = function(msg, url, line, col, error) {
    var extra = !col ? '' : '\ncolumn: ' + col;
-   JL().fatalException('Uncaught Exception (B): ' + msg + '\nurl: ' + url + '\nline: ' + line + extra, error);
+   Logger.get('window').error(msg + '\nurl: ' + url + '\nline: ' + line + extra, error);
 
    return true;
 };

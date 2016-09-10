@@ -3,9 +3,12 @@ import {Dbms} from './dbms.service';
 import {Transaction} from './transaction';
 import {TransactionProcessor} from './transactionProcessor';
 import {TransactionSerializer} from './transactionSerializer.service';
+import {Logger} from '../logger';
 
 export class Db {
-    
+
+    private logger: Logger = Logger.get('Db');
+
     private transactions: LokiCollection<Transaction>;
     public sortedTransactions: LokiDynamicView<Transaction>;
     private active: boolean;
@@ -190,7 +193,7 @@ export class Db {
 
     fireEvent(eventName, data) {
         // TODO: Register dbs.service as a listener, and have it emit events, so replication can listen at a "global" level rather than to every db
-        JL('db').debug(eventName + ' data: ' + JSON.stringify(data));
+        this.logger.debug(eventName + ' data: ' + JSON.stringify(data));
         this.eventListeners.forEach(function(l) {l(eventName, data); });
     }
 

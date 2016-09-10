@@ -3,11 +3,13 @@ import {Platform} from 'ionic-angular';
 import {Injectable} from '@angular/core';
 import {PersistenceProviderManager} from './db/persistenceProviderManager';
 import {DbPersistenceProvider} from './db/dbPersistenceProvider';
+import {Logger} from './logger';
 
 
 @Injectable()
 export class Configuration {
-    
+    private logger: Logger = Logger.get('Configuration');
+
     private configured: boolean = false;
     public installationId: string;
     public deviceId: string;
@@ -44,20 +46,20 @@ export class Configuration {
         this.initLogLevel();
 
         if (this.platform.is('cordova')) {
-            JL().info('Running cordova');
+            this.logger.info('Running cordova');
             this.native = true;
-            JL().info('Device Info');
-            JL().info(Device.device);
+            this.logger.info('Device Info');
+            this.logger.info(Device.device);
         }
         if (!this.platform.is('cordova')) {
-            JL().info('Running web browser');
+            this.logger.info('Running web browser');
             this.native = false;
         } 
 
         // Device and install Ids
         if (! this.persistence.keyStore(this.cId, 'installationId')) this.persistence.keyStore(this.cId, 'installationId', 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {var r = Math.random() * 16 | 0, v = c === 'x' ? r : r & 0x3 | 0x8; return v.toString(16); }));
         this.installationId = this.persistence.keyStore(this.cId, 'installationId');
-        JL().info('Installation Id: ' + this.installationId);
+        this.logger.info('Installation Id: ' + this.installationId);
         this.deviceId = this.native ? Device.device.uuid.toLowerCase() : this.installationId;
         this.deviceName = !this.native ? 'Web Browser' : ((<any>Device.device).name || Device.device.model || 'Mobile Device');
         if (! this.persistence.keyStore(this.cId, 'deviceId')) this.persistence.keyStore(this.cId, 'deviceId', this.deviceId);
@@ -71,9 +73,9 @@ export class Configuration {
 
     initLogLevel() {
         if (this.loglevel === 'Debug') {
-            JL().setOptions({level: JL.getDebugLevel()});
+            this.logger.config.level = Logger.DEBUG;
         } else {
-            JL().setOptions({level: JL.getInfoLevel()});
+            this.logger.config.level = Logger.INFO;
         }
     }
     

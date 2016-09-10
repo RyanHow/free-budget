@@ -488,10 +488,10 @@ namespace moment {
 export = moment;
 }
 declare module 'moment/moment' {
-import alias = require('~moment/moment');
-export = alias;
+import main = require('~moment/moment');
+export = main;
 }
 declare module 'moment' {
-import alias = require('~moment/moment');
-export = alias;
+import main = require('~moment/moment');
+export = main;
 }

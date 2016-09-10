@@ -14,6 +14,7 @@ import {AddEditTransferModal} from '../../modals/add-edit-transfer/addEditTransf
 import {InitCategoryTransferTransaction} from '../../data/transactions/initCategoryTransferTransaction';
 import {DFormatPipe} from '../../dFormat';
 import {CurrencyDisplay} from '../../currencyDisplay';
+import {Logger} from '../../logger';
 
 @Page({
   templateUrl: 'build/pages/category/category.html',
@@ -21,6 +22,8 @@ import {CurrencyDisplay} from '../../currencyDisplay';
   pipes: [DFormatPipe]
 })
 export class CategoryPage {
+  private logger: Logger = Logger.get('CategoryPage');
+
   budget: Db;
   budgetRecord: Budget;
   category: Category;
@@ -107,12 +110,12 @@ export class CategoryPage {
     .applyFind({'categoryId' : this.category.id})
     .applySortCriteria([['date', true], ['id', true]]);
 
-    JL().debug('WIll Enter Dynamic Views ' + this.transactionTable.DynamicViews.length);
+    this.logger.debug('WIll Enter Dynamic Views ' + this.transactionTable.DynamicViews.length);
 
   }
   ionViewDidLeave() {
     this.transactionTable.removeDynamicView(this.transactions.name);
-    JL().debug('Did Leave Dynamic Views ' + this.transactionTable.DynamicViews.length);
+    this.logger.debug('Did Leave Dynamic Views ' + this.transactionTable.DynamicViews.length);
     this.transactions = <any> {data : function() {return []; }};
 
   }

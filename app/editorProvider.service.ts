@@ -1,9 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Modal, ModalController} from 'ionic-angular';
+import {Logger} from './logger';
 
 @Injectable()
 export class EditorProvider {
         
+    private logger: Logger = Logger.get('EditorProvider');
+
     private modalProviders: Array<ModalProvider>;
         
     constructor(private modalController: ModalController) {
@@ -20,7 +23,7 @@ export class EditorProvider {
             if (modalClass) return this.modalController.create(modalClass);
         }
 
-        JL().fatal({msg: 'No modal provider found', params: params});
+        this.logger.error({msg: 'No modal provider found', params: params});
         throw new Error('No modal provider for ' + params);      
     }
     

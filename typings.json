@@ -6,7 +6,6 @@
   "ambientDependencies": {
     "big.js": "registry:dt/big.js#0.0.0+20160317120654",
     "es6-shim": "registry:dt/es6-shim#0.31.2+20160317120654",
-    "jsnlog": "registry:dt/jsnlog#2.11.0+20160317120654",
     "lokijs": "registry:dt/lokijs#0.0.0+20160316155526"
   },
   "globalDependencies": {
