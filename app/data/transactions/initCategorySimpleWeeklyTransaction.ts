@@ -8,7 +8,7 @@ import {Logger} from '../../logger';
 
 export class InitCategorySimpleWeeklyTransaction extends Transaction {
 
-    private logger: Logger = Logger.get('InitCategorySimpleWeeklyTransaction');
+    private static logger: Logger = Logger.get('InitCategorySimpleWeeklyTransaction');
 
     categoryId: number;
     balanceDate: string;
@@ -27,7 +27,7 @@ export class InitCategorySimpleWeeklyTransaction extends Transaction {
         let table = tp.table(Category);
         let categoryRecord = table.by('id', <any> this.categoryId);
         if (categoryRecord == null) {
-            this.logger.info('Trying to processing category weekly transaction with invalid category. Skipping.');
+            InitCategorySimpleWeeklyTransaction.logger.info('Trying to processing category weekly transaction with invalid category. Skipping.');
             return;
         }
         let processor = new CategorySimpleWeeklyProcessor();
@@ -54,7 +54,7 @@ export class InitCategorySimpleWeeklyTransaction extends Transaction {
         let categoryRecord = table.by('id', <any> this.categoryId);
 
         if (categoryRecord == null) {
-            this.logger.info('Trying to processing category weekly transaction with invalid category. Skipping.');
+            InitCategorySimpleWeeklyTransaction.logger.info('Trying to processing category weekly transaction with invalid category. Skipping.');
             return;
         }
 

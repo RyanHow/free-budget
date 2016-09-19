@@ -40,15 +40,50 @@ export class Logger {
 
         if (this.config.level > level) return;
 
-        // TODO: Can probably separate appenders into another class if ever need different config for different loggers
+        this.config.getAppenders().forEach(appender => {
+            appender.log(level, data);
+        });
 
-        if (level === Logger.DEBUG) {
-            console.info(data);
-        } else if (level === Logger.INFO) {
-            console.info(data);
-        } else if (level === Logger.ERROR) {
-            console.error(data);
+    }
+
+    public static stringValue(value: any): string {
+        if (typeof value === 'undefined') return 'undefined';
+        if (value === null) return 'null';
+        if (typeof value === 'string') return value;
+        if (typeof value === 'number') return value.toString();
+        if (typeof value === 'function') return Logger.stringValue(value());
+
+        // TODO: If Error then need to print a stack trace, message, etc
+
+        // TODO: Maybe return these as some kind of wrapped type so we can group logging on them, or log the object to console, but the string version to a file
+        // .. And the .toString() method will just return the string value of it, so it is kinda like just returning a string...
+        // TODO: Will implement as needed...
+
+        if (value === Object(value)) {
+            if (value instanceof Array) {
+                // TODO: Iterate it and run each of the values ?
+            }
+
+            if (typeof value.toLog === 'function') {
+                return value.toLog();
+            }
+
+            // TODO: test for certain kind of objects and run through the values of them ?.
+            let cache = [];
+            return JSON.stringify(value, function(key, value) {
+                if (typeof value === 'object' && value !== null) {
+                    if (cache.indexOf(value) !== -1) {
+                        // Circular reference found, discard key
+                        return '[circular]';
+                    }
+                    // Store value in our collection
+                    cache.push(value);
+                }
+                return value;
+            });
+
         }
+
     }
 
 }
@@ -56,6 +91,7 @@ export class Logger {
 export class LoggerConfig {
     parent: Logger;
     private _level: number;
+    private _appenders: LoggerAppender[] = [];
 
     get level(): number {
         if (typeof this._level === 'undefined') return this.parent.config.level;
@@ -63,8 +99,53 @@ export class LoggerConfig {
     set level(value: number) {
         this._level = value;
     }
+    getAppenders(): LoggerAppender[] {
+        if (typeof this.parent === 'undefined') return this._appenders;
+        return this._appenders.concat(this.parent.config.getAppenders());
+    }
+    addAppender(appender: LoggerAppender) {
+        return this._appenders.push(appender);
+    }
+
+    // Removing appenders - Do it when/if eventually needed
+
     
+}
+
+export interface LoggerAppender { 
+    log (level: number, ...data: any[]);
+}
+
+export class LoggerConsoleAppender implements LoggerAppender {
+     log (level: number, ...data: any[]) {
+
+        let message = data.length > 0 ? Logger.stringValue(data[0]) : 'Log';
+        let extradata: any[] = null;
+        if (message === data[0]) {
+            extradata = data.slice(1);
+        }
+
+        if (level === Logger.DEBUG || level === Logger.INFO) {
+            if (extradata !== null && extradata.length > 0) {
+                console.groupCollapsed(message);
+                console.info(extradata);
+                console.groupEnd();
+            } else {
+                console.info(message);
+            }
+        } else if (level === Logger.ERROR) {
+            if (extradata !== null && extradata.length > 0) {
+                console.groupCollapsed(message);
+                console.error(extradata);
+                console.groupEnd();
+            } else {
+                console.error(message);
+            }
+        }
+
+     }
 }
 
 Logger.root = new Logger();
 Logger.root.config.level = Logger.DEBUG;
+Logger.root.config.addAppender(new LoggerConsoleAppender());
